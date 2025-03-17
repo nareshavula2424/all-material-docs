@@ -45,3 +45,106 @@
   -> Improves Maintainbility
 
 5. what is circular dependency ?
+=> Circular dependency is two or more classes, components or modules depend on each other directly or indirectly, creating a cycle.
+=> This can lead issues such as stackoverflow,compilation errors, or runtime failures due to infinite loops in dependency resolution.
+
+Example in Java (Spring Boot):
+===============================
+Consider two classes that depend on each other:
+
+@Component
+class A {
+
+  @Autowired
+  priavte B b;
+
+  A(B b){
+    this.b = b;
+  }
+}
+@Component
+class B{
+
+  @Autowired
+  private A a;
+
+  B(A a){
+    this.a = a;
+  }
+}
+
+Here, Class A depends on Class B, and Class B depends on Class A, forming a circular dependency.
+
+Why is it a problem?
+Spring cannot resolve which bean to initialize first.
+It results in BeanCurrentlyInCreationException during application startup.
+
+How to fix it?
+✅ Solution 1: Use @Lazy annotation
+
+@Component
+class A {
+    private final B b;
+
+    @Autowired
+    public A(@Lazy B b) { // Lazy initialization
+        this.b = b;
+    }
+}
+✅ Solution 2: Use setter injection
+
+@Component
+class A {
+    private B b;
+
+    @Autowired
+    public void setB(B b) {
+        this.b = b;
+    }
+}
+
+one more Example:
+=================
+@Service
+public class ServiceA {
+    private ServiceB serviceB;
+
+    ServiceA(@Lazy ServiceB serviceB){
+        this.serviceB = serviceB;
+    }
+
+    public void execute(){
+        serviceB.execute();
+    }
+    public void executeA(){
+        System.out.println("Execute of A class");
+    }
+}
+@Service
+public class ServiceB {
+    @Autowired
+    private ServiceA serviceA;
+
+    ServiceB(ServiceA serviceA){
+        this.serviceA = serviceA;
+    }
+    public void execute(){
+        System.out.println("Executed method");
+    }
+    public void executeB(){
+        serviceA.executeA();
+    }
+}
+@SpringBootApplication
+public class SpringBootPracticeApplication {
+
+  public static void main(String[] args) {
+    ApplicationContext context = SpringApplication.run(SpringBootPracticeApplication.class, args);
+    ServiceA serviceA =  context.getBean(ServiceA.class);
+    ServiceB serviceB =  context.getBean(ServiceB.class);
+    serviceA.execute();
+    serviceB.executeB();
+  }
+
+}
+

@@ -1,0 +1,47 @@
+
+1.what is spring framework ?
+
+=> Spring framework is powerful,light-weight and opensource framework for java development.
+=> it provides comprehensive support for developing java applications, particularly enterprise-level
+   applications
+=> it simplifies the java development by providing features like DI,AOP,Transaction management and integration with various frameworks.
+
+2.what is springboot, and how it is different from spring framework ?
+
+=> spring boot is an extension of spring framework by providing auto-configuration, embaded servers and convention-
+    over - configuration approch.
+
+   SPRING FRAMEWORK                       VS                        SPRING BOOT:
+-> configuration - requires XML/ java based                     -> Uses auto configuration
+                   config
+
+-> server-setup - Need an external server                       -> By default comes with embaded server
+                  (Tomcat,Jetty)
+
+-> dependency
+   management  - manual dependency handling                     -> Uses spring boot starters for dependency
+
+
+3.what is @SpringBootApplication, and what does it do ?
+
+=> @SpringBootApplication is composite annotation that combines
+  @Configuration -> it used to define beans in spring
+  @EnableAutoConfiguration -> Automatically configures beans based on the dependencies(Ex.,if spring-boot-starter-web is present, it configures an Embaded Tomcat Server,DispatcherServlet,Jackson (for JSON processing)) 
+  =>if SpringDataJPA is present , springboot auto configures 
+        * Datasource
+        * EntityManager
+        * TransactionManager
+
+  @ComponetScan -> Scans component like (@Service,@Controller,@Repository)
+
+
+4.what is Dependency Injection in spring boot ?
+=> Dependency Injection in springboot is design pattern spring automatically injects dependencies into components,
+  avoid manual instantation.
+
+  why use DI ?
+  -> Removes tight coupling 
+  -> Enhances testability
+  -> Improves Maintainbility
+
+5. what is circular dependency ?

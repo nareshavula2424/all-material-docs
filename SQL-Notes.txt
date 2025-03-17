@@ -1,0 +1,664 @@
+SQL- Structured Quary Language:
+===============================
+
+=>SQL (Structured Query Language) is a standard programming language used to manage and manipulate relational databases. It allows users to create, read, update, and delete data stored in database tables. SQL is widely used in database management systems like MySQL, PostgreSQL, SQL Server, and Oracle.
+
+SQL Commands:
+DDL,DML,DQL,TCL,DCL
+
+DDL- Data defination language:
+==============================
+
+=> it is a subset of sql that deals with defining and managing the structure of database objects like tables,schemas, indexes and contraints.
+
+Key DDL Commands:
+=================
+
+-> CREATE - it is used to create database objects like tables,indexes,views etc.
+
+-> ALTER - it is used to modify the existing structure of database objects.
+
+-> DROP - it is used to delete the database objects permenently.
+
+-> TRUNCATE - it is used to deletes all records from table but retains the structure.
+
+-> RENAME - Renames an existing database object.
+
+
+DML- Data Manipulation Language:
+================================
+
+-> it is a subset of sql, it is used to modify and retrive the data from database tables. 
+
+-> it works with actual data.
+
+Key DML Commands:
+=================
+
+INSERT – Adds new records into a table.
+UPDATE – Modifies existing records.
+DELETE – Removes records from a table.
+SELECT – Retrieves records from a table (although technically, SELECT is classified as DQL – Data Query Language).
+
+Download PostgreSQL: 
+
+         https://www.postgresql.org/download/windows/
+
+=> After completion of download and install set path in Environment variables(System variables)
+
+    Example: C:\Program Files\PostgresSQL\13\bin
+
+=> Documentation Reference:
+            https://www.postgresqltutorial.com/
+
+
+
+Create Database:
+================
+
+-> First open cmd and enter psql -U postgres
+
+-> And Create Database $ create sampledb;
+
+-> connect to database $ \connect sampledb;
+
+Create Table:
+================
+
+-> Syntax:
+          CREATE table table-name(
+          coloumn1 datatype contraint-name,
+          coloumn2 datatype contraint-name,
+    );
+
+    Example: CREATE table employee (
+        id serial PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        email VARCHAR(100) UNIQUE NOT NULL,
+        phonenumber TEXT UNIQUE NOT NULL
+
+    );
+
+-> After creating the table if you want see the list of tables in your database.
+
+   ->$ \dt  -> this command will show the list of tables in your database.
+
+   ->$ \d > To see the list of  columns in table.
+
+
+->INSERT records into table
+
+-> $ INSERT INTO employee(name,email,phonenumber) VALUES ('Naresh','naresh.avula@gmail.com','7730996460');
+INSERT INTO employee(name,email,phonenumber) VALUES ('Nagendra','nagendra.avula@gmail.com','8121274706');
+INSERT INTO employee(name,email,phonenumber) VALUES ('Lakshman','lakshman.avula@gmail.com','8987656784');
+INSERT INTO employee(name,email,phonenumber) VALUES ('Ramana','ramana.avula@gmail.com','9808087654');
+INSERT INTO employee(name,email,phonenumber) VALUES ('Sai Krishna','sai.avula@gmail.com','9098954321');
+INSERT INTO employee(name,email,phonenumber) VALUES ('Ravindra','ravi.avula@gmail.com','8143657414');
+
+
+-> we can also import .sql file  and executes the sql commands
+
+-> $ \i <filepath> 
+   example: \i C:/Users/SQL/data.sql
+
+-> ALTER: ALTER is used to modify the existing database object.
+
+   Syntax: ALTER TABLE table-name ADD COLUMN column-name data-type constraint
+
+   Example: ALTER table employee ADD COLUMN pancard TEXT UNIQUE NOT NULL;
+
+
+UPDATE: it is used to update the records in table.
+
+  -> in above we add pancard column now we need to add records for pancard column.
+    Syntax: UPDATE table-name set column= 'DIHPA27007';
+    Example: UPDATE employee set pancard='DIHPA29007';
+  Note: Above command will set pancard number to all employees.
+        But it not works if pancard column is UNIQUE,And also pancard is not same for everyone right.
+
+=> UPDATE employee set pancard='DIHPA29007' WHERE id=1; 
+    -> Above command will set pancard number for employe id is 1.
+
+TRUNCATE:
+=========
+-> It is used for delete records from table but table structure remains same.
+
+-> For Suppose, if you want delete the records from table use TRUNCATE
+
+Syntax: TRUNCATE table table-name;
+
+Example: TRUNCATE table employee;
+
+GROUP FUNCTIONS:
+================
+-> Group functions also known as aggregate functions.
+-> it is used to perform calculations on multiple rows and return as single result.
+-> these functions mainly used in GROUP BY clause.
+
+GROUP FUNCTIONS: SUM(),MIN(),MAX(),COUNT(),AVG()
+
+ Note: You cannot use where clause after group by clause.But,we can use where clause before group by clause.
+
+     Example: select gender, count(*) from employee where country='China' group by gender;
+
+===============================
+
+-> Here i am created some random data using mackroo website
+
+table name is employee and columns are 
+
+create table employee (
+    id INT,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    email VARCHAR(50),
+    gender VARCHAR(50),
+    country VARCHAR(50),
+    salary INT
+);
+
+-> Now we can execute some quaries on this raw data.
+-> $ select * from employee from employee;
+
+-> query for unique genders 
+-> $ select distinct(gender) from employee;
+
+-> select total count of each country employees;
+-> $ select country,count(*) from employee group by country;
+
+-> query for country wide genders and thier count.
+->$ select country,gender, count(*) from employee group by country,gender;
+
+-> query for country wide genders and thier count and i want order by country.
+->$ select country,gender, count(*) from employee group by country,gender order by country
+
+-> query for max sal,min sal, avg sal from genderwise
+-> $ select gender, max(salary),min(salary),avg(salary) from employee group by gender;
+
+
+============
+DELETE:
+============
+-> It is used to delete particular record from table.
+Syntax: DELETE FROM table condition;
+
+Example: DELETE FROM employee where id = 1;
+
+-> query for delete employees whose salary greater than 21000.
+->> $ delete from employee where salary > 21000;
+
+=======================================
+
+what is the difference between the DROP,TRUNCATE and DELETE ?
+
+-> DROP will delete the entire table from the database.
+-> TRUNCATE will delete the data from table but table structure remains same.
+-> DELETE will delete the table data based on the condition and we can also delete entire table,
+   then what is difference between the DROP AND DELETE.
+-> If we use DROP we cannot rollback the data.
+-> If we use DELETE we can roll back the data.
+-> DDL Commands are AUTO COMMITS by default and also we cannot use where clause for DROP Command.
+-> DML Commands are not AUTO Commit by default and we can roll back and also we can use where clause in DELETE Commands.
+
+
+===========
+OPERATORS:
+===========
+-> Operators are used to perform some operations on sql
+
+-> AND, OR, NOT, IN,LIKE,BETWEEN these are some operators in sql.
+
+-> query for i want get the employee name,country and salary from particular company
+  ->$ select first_name,country,salary from employee where country='Sri Lanka';
+
+  -> query for i want get the employee name,country and salary where country is sri lanka and united states
+  ->$ select first_name,country,salary from employee where country='Sri Lanka' OR country='United States';
+
+-> query for i want get the employee name,country and salary from any three countries 
+  ->$ select first_name,country,salary from employee where country IN ('Sri Lanka',United States','Australia');
+
+  -> get employee details where salary range between 15000 to 25000
+   -> $ select * from employee where salary BETWEEN 15000 to 25000;
+
+   -> Get The employee details whose first_name starts with 'N'.
+   -> $ select * from employee where first_name LIKE 'N%';
+
+    -> Get The employee details whose first_name ends with 'N'.
+   -> $ select * from employee where first_name LIKE '%N';
+
+      -> Get The employee details whose first_name starts having 'de'.
+   -> $ select * from employee where first_name LIKE '%de%';
+
+    -> Get The employee details whose first_name starts with s letter and name having only six letters after
+   -> $ select * from employee where first_name LIKE 's%______';
+
+
+   
+
+
+JOINS:
+======
+=> In SQL, Joins are used to retreive the data from multiple tables based on related columns.there are several joins 
+    in sql
+
+INNER JOIN:
+============
+-> It will retrive the matching records from the both tables
+-> it will exclude the non-matching columns
+  
+Example: 
+SELECT employees.id, employees.name, departments.dept_name
+FROM employees
+INNER JOIN departments ON employees.dept_id = departments.id;
+
+LEFT JOIN (Left Outer Join):
+============================
+=> It will returns the all records from left table and matching records from table 
+
+=> it returns null if no matching columns in right table.
+
+EXAMPLE: 
+SELECT employees.id, employees.name, departments.dept_name
+FROM employees
+LEFT JOIN departments ON employees.dept_id = departments.id;
+
+RIGHT JOIN(Right Outer Join):
+=============================
+=> It will returns the all records from right table and matching records from left table.
+
+=> It returns null if no matching columns from left table.
+
+Example:
+SELECT employees.id, employees.name, departments.dept_name
+FROM employees
+RIGHT JOIN departments ON employees.dept_id = departments.id;
+
+FULL JOIN(Full Outer Join):
+===========================
+=> It returns all records from both tables.
+=> if there is no match,Null is returned in missing fields.
+
+Example:
+
+SELECT employees.id, employees.name, departments.dept_name
+FROM employees
+FULL JOIN departments ON employees.dept_id = departments.id;
+
+CROSS JOIN:
+===========
+=> Produces a Cartesian product of both tables(Every row of table A is combined with every row of table B)
+
+Example:
+SELECT employees.name, departments.dept_name
+FROM employees
+CROSS JOIN departments;
+
+
+6. SELF JOIN:
+=============
+Joins a table with itself.
+Useful for hierarchical data (e.g., employees and their managers).
+
+Example:
+SELECT e1.name AS Employee, e2.name AS Manager
+FROM employees e1
+INNER JOIN employees e2 ON e1.manager_id = e2.id;
+
+
+===============
+Having Clause
+===============
+-> It is used to restrict the group by functions
+
+=> If you want get the country whose employyes count is less than 100
+=> $ select country,count(*) from employee group by country having count(*) < 100;
+
+===============================================================================
+
+Creating tables dept and employee and making relationship with these two tables.
+
+$ create table dept(deptno int,dname varchar(100),location varchar(100), constraint pk_deptno primary key(deptno), constraint un_name unique(dname));
+
+$ create table employee(empno int,ename varchar(100),salary float,email varchar(100), deptno int, constraint pk_empno primary key(empno), constraint fk_emp_dept foreign key(deptno) references dept(deptno));
+
+-> for suppose you want drop the table dept, first you need to break the relationship b/w parent and child tables
+-> Here parent is dept table and child is employee table, below is command.
+
+-> $ alter table employee drop constraint fk_emp_dept;
+-> now you can drop the dept table
+
+============================
+ on delete cascade
+============================
+-> By using on delete cascade we can delete parent records along with the child records.
+$ create table employee(empno int,ename varchar(100),salary float,email varchar(100), deptno int, constraint pk_empno primary key(empno), constraint fk_emp_dept foreign key(deptno) references dept(deptno) on delete cascade);
+
+===================
+on delete set null
+===================
+
+-> whenever you delete the records from parent table, child records set to be null by using on delete set null.
+-> $ create table employee(empno int,ename varchar(100),salary float,email varchar(100), deptno int, constraint pk_empno primary key(empno), constraint fk_emp_dept foreign key(deptno) references dept(deptno) on delete set null);
+
+-> delete table dept where deptno= 10;
+
+-> After execution of above command, who are belongs to deptno 10 in employee table, there deptno is null 
+===============================================================
+Comman tables for using sql practice:
+
+    CREATE TABLE DEPT (
+    DEPTNO int PRIMARY KEY, 
+    DNAME VARCHAR(14), 
+    LOC VARCHAR(13)
+);
+
+
+INSERT INTO DEPT VALUES (10, 'ACCOUNTING', 'NEW YORK');
+INSERT INTO DEPT VALUES (20, 'RESEARCH', 'DALLAS');
+INSERT INTO DEPT VALUES (30, 'SALES', 'CHICAGO');
+INSERT INTO DEPT VALUES (40, 'OPERATIONS', 'BOSTON');
+
+
+CREATE TABLE EMP (
+    EMPNO int PRIMARY KEY, 
+    ENAME VARCHAR(10), 
+    JOB VARCHAR(9), 
+    MGR int, 
+    HIREDATE DATE, 
+    SAL float, 
+    COMM int, 
+    DEPTNO int,
+    CONSTRAINT EMP_DEPT_FK FOREIGN KEY (DEPTNO) REFERENCES DEPT(DEPTNO)
+);
+
+INSERT INTO EMP VALUES (7369, 'SMITH', 'CLERK', 7902, TO_DATE('17-DEC-1980', 'DD-MON-YYYY'), 800, NULL, 20);
+INSERT INTO EMP VALUES (7499, 'ALLEN', 'SALESMAN', 7698, TO_DATE('20-FEB-1981', 'DD-MON-YYYY'), 1600, 300, 30);
+INSERT INTO EMP VALUES (7521, 'WARD', 'SALESMAN', 7698, TO_DATE('22-FEB-1981', 'DD-MON-YYYY'), 1250, 500, 30);
+INSERT INTO EMP VALUES (7566, 'JONES', 'MANAGER', 7839, TO_DATE('02-APR-1981', 'DD-MON-YYYY'), 2975, NULL, 20);
+INSERT INTO EMP VALUES (7698, 'BLAKE', 'MANAGER', 7839, TO_DATE('01-MAY-1981', 'DD-MON-YYYY'), 2850, NULL, 30);
+INSERT INTO EMP VALUES (7782, 'CLARK', 'MANAGER', 7839, TO_DATE('09-JUN-1981', 'DD-MON-YYYY'), 2450, NULL, 10);
+INSERT INTO EMP VALUES (7788, 'SCOTT', 'ANALYST', 7566, TO_DATE('19-APR-1987', 'DD-MON-YYYY'), 3000, NULL, 20);
+INSERT INTO EMP VALUES (7839, 'KING', 'PRESIDENT', NULL, TO_DATE('17-NOV-1981', 'DD-MON-YYYY'), 5000, NULL, 10);
+INSERT INTO EMP VALUES (7844, 'TURNER', 'SALESMAN', 7698, TO_DATE('08-SEP-1981', 'DD-MON-YYYY'), 1500, 0, 30);
+INSERT INTO EMP VALUES (7900, 'JAMES', 'CLERK', 7698, TO_DATE('03-DEC-1981', 'DD-MON-YYYY'), 950, NULL, 30);
+INSERT INTO EMP VALUES (7902, 'FORD', 'ANALYST', 7566, TO_DATE('03-DEC-1981', 'DD-MON-YYYY'), 3000, NULL, 20);
+INSERT INTO EMP VALUES (7934, 'MILLER', 'CLERK', 7782, TO_DATE('23-JAN-1982', 'DD-MON-YYYY'), 1300, NULL, 10);
+
+CREATE TABLE SALGRADE (
+    GRADE int PRIMARY KEY, 
+    LOSAL float, 
+    HISAL float
+);
+
+
+INSERT INTO SALGRADE VALUES (1, 700, 1200);
+INSERT INTO SALGRADE VALUES (2, 1201, 1400);
+INSERT INTO SALGRADE VALUES (3, 1401, 2000);
+INSERT INTO SALGRADE VALUES (4, 2001, 3000);
+INSERT INTO SALGRADE VALUES (5, 3001, 9999);
+
+
+=====================================================
+-> get ename,dname,loc 
+-> $ select e.ename, e.job,d.loc from emp e inner join dept d on e.deptno = d.deptno;
+-> get ename,job,sal,grade,dept,loc
+-> select e.ename,e.job,e.sal,s.grade,d.deptno,d.loc from emp e inner join dept d on e.deptno = d.deptno inner join salgrade s on e.sal between s.losal and s.hisal;
+
+
+==============
+Sub Querys
+==============
+-> get employee details who are working in new york or chicago
+-> $ select * from emp where deptno in (select deptno from dept where loc= 'NEW YORK' or loc='CHICAGO');
+     
+              or
+-> $ select * from emp where deptno in (select deptno from dept where loc in ('NEW YORK','CHICAGO');
+
+-> get max salary details of employee 
+-> $ select * from emp where sal = (select max(sal) from emp);
+-> get second highest sal employee 
+-> $ select * from emp where sal = (select max(sal) from emp where sal  < (select max(sal) from emp));
+
+
+
+    SQL Practice Examples:
+    ========================
+Complex Queries Using JOINs and SUBQUERIES:
+============================================
+1. Find Employee Name, Job, Department Name, and Location (JOIN Example)
+
+SELECT e.ENAME, e.JOB, d.DNAME, d.LOC
+FROM EMP e
+JOIN DEPT d ON e.DEPTNO = d.DEPTNO;
+
+2. Find Employees Who Earn More Than Their Manager (SELF JOIN Example)
+
+SELECT e.ENAME AS Employee, e.SAL AS Employee_Salary, m.ENAME AS Manager, m.SAL AS Manager_Salary
+FROM EMP e
+JOIN EMP m ON e.MGR = m.EMPNO
+WHERE e.SAL > m.SAL;
+
+3. Find Employees with Their Salary Grade (JOIN with SALGRADE)
+
+SELECT e.ENAME, e.SAL, s.GRADE
+FROM EMP e
+JOIN SALGRADE s ON e.SAL BETWEEN s.LOSAL AND s.HISAL;
+
+4. Find the Highest Paid Employee in Each Department (JOIN with SUBQUERY)
+
+SELECT e.ENAME, e.SAL, e.DEPTNO, d.DNAME
+FROM EMP e
+JOIN DEPT d ON e.DEPTNO = d.DEPTNO
+WHERE e.SAL = (SELECT MAX(SAL) FROM EMP WHERE DEPTNO = e.DEPTNO);
+
+5. Retrieve Employees Who Work in 'SALES' Department (SUBQUERY in WHERE)
+
+SELECT ENAME, JOB, SAL
+FROM EMP
+WHERE DEPTNO = (SELECT DEPTNO FROM DEPT WHERE DNAME = 'SALES');
+
+
+7. Find Departments with No Employees (LEFT JOIN & NULL Check)
+
+SELECT d.DNAME, d.LOC
+FROM DEPT d
+LEFT JOIN EMP e ON d.DEPTNO = e.DEPTNO
+WHERE e.EMPNO IS NULL;
+
+9. Find Employees Earning More Than the Average Salary of Their Department
+
+SELECT ENAME, SAL, DEPTNO
+FROM EMP e1
+WHERE SAL > (SELECT AVG(SAL) FROM EMP e2 WHERE e1.DEPTNO = e2.DEPTNO);
+
+==================
+Window Functions:
+==================
+=> Window function is also called as analytic function.
+=> A window function in SQL performs calculations across a set of table rows that are related to current row.
+=> Unlike aggregate functions SUM(),AVG(),COUNT() that return a single result for group of rows, window functions 
+   return a value for each row as result set.
+
+Key Features of Window Functions:
+
+=>Do not collapse rows – Unlike GROUP BY, they maintain individual rows in the output.
+=>Perform calculations across a subset of data – The subset (or "window") is defined using the OVER() clause.
+=>Can use partitions – Similar to GROUP BY, the PARTITION BY clause divides data into groups.
+=================================
+select e.*,
+max(sal) over() as max_sal
+from emp e;
+
+============================
+
+below query will give max sal in each dept:
+============================================
+with emp_max as (
+  select
+  e.ename,
+  e.empno,
+  e.job,
+  d.dname,
+  d.loc,
+  e.sal,
+  max(e.sal) over(partition by d.dname) as max_sal
+  from emp e
+  inner join dept d on e.deptno = d.deptno
+)
+  
+  select ename,empno,job,dname,loc,sal
+  from emp_max
+  where sal=max_sal;
+
+
+
+ROW_NUMBER() in SQL:
+=====================
+ROW_NUMBER() is a window function in SQL that assigns a unique sequential number to each row in a result set based on the specified ordering.
+
+syntax:
+ROW_NUMBER() OVER (
+    PARTITION BY column_name -- (optional) Divides the result set into partitions
+    ORDER BY column_name     -- Defines the order of numbering
+)
+
+
+ORDER BY → Determines the sequence in which row numbers are assigned.
+PARTITION BY (Optional) → Divides data into partitions, and row numbering starts over for each partition.
+
+Example 1: Assigning Row Numbers Without Partition
+
+SELECT ename, empno, job, sal,
+       ROW_NUMBER() OVER (ORDER BY sal DESC) AS row_num
+FROM emp;
+====================================================================
+=> query for whose joined early in each dept using row_number
+
+WITH emp_ranked AS (
+    SELECT 
+        e.ename, 
+        e.empno, 
+        e.job, 
+        d.dname, 
+        e.hiredate,
+        ROW_NUMBER() OVER (PARTITION BY d.dname ORDER BY e.hiredate ASC) AS row_num
+    FROM emp e
+    INNER JOIN dept d ON e.deptno = d.deptno
+)
+SELECT ename, empno, job, dname, hiredate
+FROM emp_ranked
+WHERE row_num = 1;
+
+=======================================================
+Top 2 employees salary's in each dept
+
+select * from (
+select e.*,
+row_number() over(partition by deptno order by sal desc) as rn
+from emp e) x
+where x.rn <=2;
+
+
+RANK() in SQL:
+=============
+=>RANK() is a window function that assigns a ranking to each row within a partition based on the specified ordering.
+=> If there are duplicate values, RANK() assigns the same rank to those rows but skips the next rank(s).
+
+Syntax:
+    RANK() OVER (
+    PARTITION BY column_name -- (optional) Divides the result set into partitions
+    ORDER BY column_name     -- Specifies ranking order
+)
+
+Example 1: Ranking Employees by Salary
+
+SELECT ename, empno, job, sal,
+       RANK() OVER (ORDER BY sal DESC) AS rank
+FROM emp;
+
+Example 2: Ranking Employees by Department (PARTITION BY)
+If we want to rank employees within each department based on salary:
+
+SELECT ename, empno, job, dname, sal,
+       RANK() OVER (PARTITION BY dname ORDER BY sal DESC) AS rank
+FROM emp
+JOIN dept ON emp.deptno = dept.deptno;
+
+**** Fetch top 3 employees in each dept earning max salary*****
+
+select * from(
+
+   select e.*,
+   rank() over(partition by deptno order by sal desc) as rnk
+   from emp e
+) x
+where x.rnk < 4;
+==========================================
+
+DENSE_RANK() in SQL:
+====================
+=> DENSE_RANK() is a window function that assigns a ranking to rows within a partition based on a specified ordering. 
+=> Unlike RANK(), it does not skip ranking numbers when there are duplicate values.
+
+Syntax:
+
+DENSE_RANK() OVER (
+    PARTITION BY column_name -- (optional) Divides data into groups
+    ORDER BY column_name     -- Defines ranking order
+)
+
+Example 1: Ranking Employees by Salary
+
+SELECT ename, empno, job, sal,
+       DENSE_RANK() OVER (ORDER BY sal DESC) AS dense_rank
+FROM emp;
+
+When to Use DENSE_RANK()?
+✅ When you need continuous ranking without skipping numbers.
+
+if you want see the difference b/w row_number(),rank(),dense_rank() execute the below query
+
+=> select 
+ename,
+empno,
+deptno,
+job,
+sal,
+rank() over(partition by deptno order by sal desc) as rnk,
+dense_rank() over(partition by deptno order by sal desc) as dense_rnk,
+row_number() over(partition by deptno order by sal desc) as rn
+from emp
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

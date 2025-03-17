@@ -1,0 +1,231 @@
+
+Collections Framework
+=====================
+=> Collections is a framework that provides an architecture to store and manipulate the group of objects.
+=> The java collection framework is part of java.util package.
+=> And includes various classes,interfaces and methods to perform opertions like seacrhing,sorting,inserting,deleting
+    and updating elements.
+
+List:
+=====
+-> List is interface in collections framework
+-> List maintain the insertion order and allow duplicate elements
+-> List use when you want access based on the index
+->implementation class Arraylist,LinkedList
+
+Example:
+       
+       import java.util.*;
+
+public class ListExample {
+    public static void main(String[] args) {
+        List<String> list = new ArrayList<>();
+        
+        // Adding elements
+        list.add("Apple");
+        list.add("Banana");
+        list.add("Orange");
+        list.add("Apple"); // Duplicate allowed
+        
+        // Iterating list
+        for (String fruit : list) {
+            System.out.println(fruit);
+        }
+    }
+}
+
+
+Set:
+====
+-> Set does not maintain insertion order
+-> it does not allow duplicates
+-> set use when you searching elements from collection.
+-> Implementation Classes LinkedSet, LinkedHashSet
+Example:
+
+      import java.util.*;
+
+public class SetExample {
+    public static void main(String[] args) {
+        Set<String> set = new HashSet<>();
+        
+        // Adding elements
+        set.add("Apple");
+        set.add("Banana");
+        set.add("Orange");
+        set.add("Apple"); // Duplicate ignored
+        
+        // Iterating set
+        for (String fruit : set) {
+            System.out.println(fruit);
+        }
+    }
+}
+
+ArrayList:
+==========
+-> ArrayList is belongs to list interface
+-> Implements from list interface.
+-> Values are stored in the index bases.
+-> ArrayList is used when you want retrive data from particular index.
+-> ArrayList will allow duplicate values
+-> Maintain the insertion order.
+
+LinkedList:
+==========
+-> LinkedList belongs to list interface.
+-> implements from list interface.
+->In LinkedList values are stored in nodes.
+-> Each node having prev and next element address
+-> LinkedList mainly used for adding,removing elements.
+-> In Java's LinkedList, when you call get(index) or add(index, value), the list does not store indexes. Instead, it calculates the index dynamically by traversing the list.
+
+Since a LinkedList is a doubly linked list, it has:
+
+* head (first node) → Points to the first element.
+* tail (last node) → Points to the last element.
+* To optimize traversal, Java's LinkedList decides whether to start from head or tail:
+
+* If index < size/2 → Start from the head and move forward.
+* If index >= size/2 → Start from the tail and move backward.
+
+
+
+
+ArrayList vs LinkedList:
+========================
+-> 	Both are implemented from the list interface but differ in internal implementation, performance and usage
+
+-> ArrayList Uses Dynamic Array
+-> LinkedList Uses Double LinkedList
+-> ArrayList is mainly used for retriving data 
+-> LinkedList is mainly used for searching or deleting the data.
+
+
+HashMap:
+========
+-> HashMap belongs to map interface
+-> HashMap can store key and value pairs 
+-> HashMap does not maintain insertion order and it is not a thread safe.
+-> HashMap uses Bucket storing key and values.
+-> Bucket have array of nodes 
+-> In Each node we have Key,Value,hash,next
+-> Default size of Hashmap is 16(0-15).
+-> Load factor of Hashmap is 0.75 
+-> 16 * 0.75 = 12 , if HashMap completes the 12 mappings, then HashMap size will be doubled.
+-> When we uses HaspMap, you must override the equals() method and hashcode() method then only works properly.
+-> HashMap will allow only one null key and multiple null values.
+
+What Happen if don't use equals() and hashcode methods:
+=======================================================
+import java.util.HashMap;
+import java.util.Objects;
+
+class Person {
+    String name;
+    int age;
+
+    Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Person person = (Person) obj;
+        return age == person.age && Objects.equals(name, person.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, age);
+    }
+}
+
+public class HashMapExample {
+    public static void main(String[] args) {
+        HashMap<Person, String> map = new HashMap<>();
+
+        Person p1 = new Person("Alice", 25);
+        Person p2 = new Person("Alice", 25); // Another object with the same data
+
+        map.put(p1, "Engineer");
+        map.put(p2, "Doctor"); // Will replace only if equals() and hashCode() are correct
+
+        System.out.println(map.size()); // If equals() and hashCode() are correct, size is 1; otherwise, 2
+        System.out.println(map.get(p1)); // Should print "Doctor" if keys are considered equal
+    }
+}
+
+Explanation:
+============
+p1 and p2 are different objects but have the same values.
+If equals() and hashCode() are not overridden, HashMap will treat them as different keys, and the size will be 2.
+If overridden correctly, HashMap will consider them the same, and the size will be 1, with the value "Doctor" replacing "Engineer".
+
+LinkedHashMap
+=============
+-> LinkedHashMap belongs to map interface.
+-> LinkedHashMap is combination of LinkedList and HashMap.
+-> LinkedHashMap maintain the insertion order.
+-> LinkedHashMap is uses bucket to store key and values.
+-> Bucket will have a Array of nodes.
+-> Each node we have key,value,hash,next,before,after
+-> In LinkedHashMap have extra before,after
+-> Head and tail also there in LinkedHashMap 
+
+LinkedHashMap Example with Internal Implementation:
+===================================================
+A LinkedHashMap in Java is a subclass of HashMap, which maintains the insertion order of elements. It achieves this by using a doubly linked list running through its entries.
+
+Internal Implementation of LinkedHashMap:
+==========================================
+Extends HashMap<K, V>: It inherits the structure of HashMap but overrides some methods.
+Doubly Linked List: Each entry in LinkedHashMap maintains links to its previous and next entry.
+Access Order: Can maintain insertion order (default) or access order (when accessOrder = true)
+
+import java.util.*;
+
+public class LinkedHashMapExample {
+    public static void main(String[] args) {
+        // Creating a LinkedHashMap with default insertion order
+        LinkedHashMap<Integer, String> map = new LinkedHashMap<>();
+
+        // Inserting elements
+        map.put(1, "Java");
+        map.put(3, "Spring");
+        map.put(2, "Angular");
+        map.put(4, "Hibernate");
+
+        // Printing elements (maintains insertion order)
+        System.out.println("LinkedHashMap contents: " + map);
+
+        // Access an element
+        System.out.println("Accessing key 3: " + map.get(3));
+
+        // Iterate using EntrySet
+        for (Map.Entry<Integer, String> entry : map.entrySet()) {
+            System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue());
+        }
+
+        // Creating a LinkedHashMap with access-order enabled
+        LinkedHashMap<Integer, String> accessOrderMap = new LinkedHashMap<>(16, 0.75f, true);
+        accessOrderMap.putAll(map);
+
+        // Accessing key to change order
+        accessOrderMap.get(2);
+        accessOrderMap.get(1);
+
+        System.out.println("LinkedHashMap in access order: " + accessOrderMap);
+    }
+}
+
+
+
+
+
+
+
+

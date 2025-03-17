@@ -1,0 +1,1551 @@
+Provider: The application which is providing the services to other application (Resource).
+
+Consumer: The application which is accessing the services from other application (Client).
+
+What is Intereoperability ?
+
+=> Irrespective of language and platform if applications are communicating then they are called as intereoperable application.
+
+
+===========
+   XML
+=========== 
+-> XML Stands for Extensiable Markup language.
+-> XML is platform and language independent.
+-> XML is used to exchange the data b/w application.
+-> XML represent the data in elements format.
+-> Every elements contains open and close tag.
+
+     <id>101</id>
+     <name> Naresh</id>
+-> In XML we can use two types of elements
+  1.Simple element
+  2.Compound element.
+
+-> The element that represents data directly is known as simple element.
+
+                 <id>101</id>
+-> The elements which represents as child elements is known as compound elements.
+           <person>
+              <firstname>naresh</firstname>
+              <lastname>avula</lastname>
+          </person>
+
+==============
+ JAX-B API
+==============
+-> JAX-B API stands for java Architecture for XML Binding.
+-> Using JAX-B API we can convert the XML Data into Java object and java Object to XML Data.
+             
+            Marshaling - Convert java object to xml object.
+            Un-Marshaling - convert xml data to Java object.
+
+-> To perform marshalling and unmarshalling we need to create Binding classes.
+-> Binding class means the class which represents XML structure.
+
+Note: Upto JDK 1.8v JAX-B API is part of jdk. From jdk 1.9v they removed JAX-B From jdk.
+     To use JDK in our projects which are using java 1.9v or above version should have jax-b dependency.
+
+
+----------------------
+Example for JAXB- API
+----------------------
+-> Create one maven project 
+
+package com.naresh.binding;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
+
+@XmlRootElement
+public class Person {
+	
+	private Integer id;
+	private String name;
+	private String email;
+	private String gender;
+	
+	@XmlTransient
+	public Address address;
+	
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getGender() {
+		return gender;
+	}
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+	
+	
+	
+	public Address getAddress() {
+		return address;
+	}
+	public void setAddress(Address address) {
+		this.address = address;
+	}
+	@Override
+	public String toString() {
+		return "Person [id=" + id + ", name=" + name + ", email=" + email + ", gender=" + gender + ", address=" + address
+				+ "]";
+	}
+	
+	
+
+}
+
+package com.naresh.binding;
+
+public class Address {
+	
+	private String state;
+	private String village;
+	private String mandal;
+	private String landmark;
+	public String getState() {
+		return state;
+	}
+	public void setState(String state) {
+		this.state = state;
+	}
+	public String getVillage() {
+		return village;
+	}
+	public void setVillage(String village) {
+		this.village = village;
+	}
+	public String getMandal() {
+		return mandal;
+	}
+	public void setMandal(String mandal) {
+		this.mandal = mandal;
+	}
+	public String getLandmark() {
+		return landmark;
+	}
+	public void setLandmark(String landmark) {
+		this.landmark = landmark;
+	}
+	@Override
+	public String toString() {
+		return "Address [state=" + state + ", village=" + village + ", mandal=" + mandal + ", landmark=" + landmark
+				+ "]";
+	}
+	
+
+}
+
+
+package com.naresh.binding;
+
+public class Address {
+	
+	private String state;
+	private String village;
+	private String mandal;
+	private String landmark;
+	public String getState() {
+		return state;
+	}
+	public void setState(String state) {
+		this.state = state;
+	}
+	public String getVillage() {
+		return village;
+	}
+	public void setVillage(String village) {
+		this.village = village;
+	}
+	public String getMandal() {
+		return mandal;
+	}
+	public void setMandal(String mandal) {
+		this.mandal = mandal;
+	}
+	public String getLandmark() {
+		return landmark;
+	}
+	public void setLandmark(String landmark) {
+		this.landmark = landmark;
+	}
+	@Override
+	public String toString() {
+		return "Address [state=" + state + ", village=" + village + ", mandal=" + mandal + ", landmark=" + landmark
+				+ "]";
+	}
+	
+
+}
+package com.naresh.binding;
+
+public class Address {
+	
+	private String state;
+	private String village;
+	private String mandal;
+	private String landmark;
+	public String getState() {
+		return state;
+	}
+	public void setState(String state) {
+		this.state = state;
+	}
+	public String getVillage() {
+		return village;
+	}
+	public void setVillage(String village) {
+		this.village = village;
+	}
+	public String getMandal() {
+		return mandal;
+	}
+	public void setMandal(String mandal) {
+		this.mandal = mandal;
+	}
+	public String getLandmark() {
+		return landmark;
+	}
+	public void setLandmark(String landmark) {
+		this.landmark = landmark;
+	}
+	@Override
+	public String toString() {
+		return "Address [state=" + state + ", village=" + village + ", mandal=" + mandal + ", landmark=" + landmark
+				+ "]";
+	}
+	
+
+}
+package com.naresh.util;
+
+import java.io.File;
+
+
+
+import com.naresh.binding.Address;
+import com.naresh.binding.Person;
+
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
+
+
+
+public class MarshalDemo {
+	public static void main(String[] args) throws JAXBException {
+		
+		Person p = new Person();
+		p.setId(1001);
+		p.setName("Naresh");
+		p.setGender("Male");
+		p.setEmail("naresh.avula@gmail.com");
+		Address address = new Address();
+		address.setLandmark("Sai baba temple street");
+		address.setMandal("Durgi");
+		address.setState("AP");
+		address.setVillage("Mutukuru");
+		p.setAddress(address);
+		JAXBContext context = JAXBContext.newInstance(Person.class);
+		Marshaller marshaller = context.createMarshaller();
+		marshaller.marshal(p, new File("person.xml"));
+		System.out.println("Done...");
+		
+		
+	}
+	
+
+}
+package com.naresh.util;
+import java.io.File;
+
+import com.naresh.binding.Person;
+
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
+
+public class UnMarshalDemo {
+	
+	public static void main(String[] args) throws JAXBException {
+		JAXBContext context = JAXBContext.newInstance(Person.class);
+		Unmarshaller unMarshaller = context.createUnmarshaller();
+		Person p = (Person) unMarshaller.unmarshal(new File("person.xml"));
+		System.out.println(p);
+	}
+	
+
+}
+---------------------------------
+
+
+============
+JSON
+============
+-> JSON stands for java script object notation.
+-> JSON Represents data in key value format.
+-> JSON is lightweight 
+-> JSON is a Interoperable (platform and language Independent).
+-> we can use json structure to exchange the data b/w applications.
+
+Note : When compared to XML, JSON will take less memory.
+
+ --> To work with JSON data, we have below third party APIs
+       
+                 1. Jackson API(It is default in spring boot).
+
+                 2. Gson API.
+
+=> Using above apis we can convert java object to json and json to java object.
+
+          -> Serialization - convert java object to json.
+          -> De-serialization - convert json to java object.
+
+=> Jackson api is provides the methods to perform the operations java with json.
+  
+     ObjectMapper mapper = new ObjectMapper();
+       mapper.writeValue(new File("person.json), personObject);
+    Person p = mapper.readValue(new File(person.json), Person.class);
+
+----------------------------------------Jackson Example--------------------------------------------
+-------------------------------
+Convert Java object to json:
+-------------------------------
+
+package com.naresh.bindings;
+
+import com.naresh.util.Address;
+
+public class Passenger {
+	
+	private String name;
+	private String from;
+	private String to;
+	private String gender;
+	
+	private Address addr;
+	
+	
+	
+	public Passenger(String name, String from, String to, String gender,Address addr) {
+		this.name = name;
+		this.from = from;
+		this.to = to;
+		this.gender = gender;
+		this.addr = addr;
+	}
+	public Passenger(String name, String from, String to, String gender) {
+		this.name = name;
+		this.from = from;
+		this.to = to;
+		this.gender = gender;
+	}
+	public Passenger() {
+		
+	}
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getFrom() {
+		return from;
+	}
+	public void setFrom(String from) {
+		this.from = from;
+	}
+	public String getTo() {
+		return to;
+	}
+	public void setTo(String to) {
+		this.to = to;
+	}
+	public String getGender() {
+		return gender;
+	}
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+	
+	public Address getAddr() {
+		return addr;
+	}
+	public void setAddr(Address addr) {
+		this.addr = addr;
+	}
+	@Override
+	public String toString() {
+		return "Passenger [name=" + name + ", from=" + from + ", to=" + to + ", gender=" + gender + ", addr=" + addr
+				+ "]";
+	}
+	
+	
+
+}
+
+package com.naresh.util;
+
+import java.io.File;
+import java.io.IOException;
+
+import com.fasterxml.jackson.core.exc.StreamWriteException;
+import com.fasterxml.jackson.databind.DatabindException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.naresh.bindings.Passenger;
+
+public class JavaToJson {
+	public static void main(String[] args) throws StreamWriteException, DatabindException, IOException {
+		Address address = new Address();
+		address.setCity("Guntur");
+		address.setCountry("India");
+		address.setState("AP");
+		
+		Passenger passenger1 = new Passenger("Naresh Avula","Hyderabad","Macherla","Male",address);
+		//Passenger passenger2 = new Passenger("Lakshman Avula","Bangalore","Macherla","Male");
+
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.writeValue(new File("passenger.json"),passenger1);
+		System.out.println("Done...");
+	}
+
+}
+------------------------------------
+Convert JSON DATA to Java Object:
+------------------------------------
+
+package com.naresh.util;
+
+import java.io.File;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.naresh.bindings.Passenger;
+
+public class JsonToJava {
+	
+	public static void main(String[] args) throws Exception {
+		ObjectMapper mapper = new ObjectMapper();
+		Passenger ps = mapper.readValue(new File("passenger.json"),Passenger.class);
+		System.out.println(ps);
+	}
+
+}
+
+==================
+HTTP Protocal
+==================
+=> HTTP stands for HyperText Transfer Protocal.
+=> HTTP Acts as mediator b/w client and server.
+
+ -> 1. HTTP Methods
+    2. HTTP Status Codes
+    3. HTTP Request.
+    4. HTTP Response.
+
+===============
+HTTP Methods
+===============
+
+       => POST -> To Send data from client to server.
+       => GET  -> To get data from the resource/server.
+       => PUT  -> To update data at server.
+       => DELETE ->To delete data from server. 
+
+Note: Rest API's methods should be binded to Http Protocal methods.
+
+==================
+HTTP Status Codes
+==================
+-> Server will send the HTTP Status codes to client in the response.
+-> HTTP Status code will responds how server processed our request.
+ 
+   1XX (100 to 199) - Informational Status code
+   2XX (200 to 299) - Success status code 
+   3XX (300 to 399) - Redirectional status code
+   4XX (400 to 499) - Client error
+   5XX (500 to 599) - Server Error
+   
+===========================   
+Requirement:
+===========================
+ -> Develop REST API to book train tickets. It should contain 2 end points. 
+ 
+ 1. BOOK Ticket -- POST Request
+         
+		      Input: Passenger Data
+			  output: Ticket Data
+
+2. Get Ticket --- GET Request
+ 
+             Input: Ticket Id
+			 output: Ticket details
+			 
+			 
+===========================================
+Development procedure for above Requirement
+===========================================
+1. create springboot application with below dependencies  
+  a) web-starter
+  b) lombok
+  c) devtools
+  
+2. Create request and response Binding classes
+
+3. Create REST Controller class with required Methods 
+
+4. Bind Rest controller methods to HTTP Request methods
+
+5. Run our application with embedded server
+
+6. Test our application with postman
+
+
+============
+Swagger
+============
+=> In distributed applications two factors will be available 
+
+       1. Provider
+       2. Consumer
+=> Provider will be developed by one company
+=> Consumer will be developed by another company
+
+=> if consumer wants to access provider, consumer side dev team should now provider information
+
+          1. what provider api url ?
+          2. what operations provider having ?
+          3. Operation is binded to which request type ?
+          4. What input provider expecting from consumer ? 
+          5. what output provider will give to consumer ?
+          6. which data form provider will support for input and output ?
+
+
+    Note : if consumer side dev team having all the above information then only they can start consumer side 
+          development.
+
+    Note : provider side dev team should provide the API Documentation to consumer side dev team.
+
+ => Swagger is used to generate api documentation 
+ => Swagger is third party library which is used to generate the REST API Documentation.
+ 
+Note: Using Swagger Documentation Consumer side dev team will understand Provider API Information.
+
+====================================================
+Steps to add the swagger documentation to REST API
+====================================================
+1. Add swagger and swagger-ui dependencies to pom.xml file.
+
+    <dependency>
+        <groupId>io.springfox</groupId>
+        <artifactId>springfox-swagger2</artifactId>
+        <version>2.6.1</version>
+    </dependency>
+	<dependency>
+        <groupId>org.springdoc</groupId>
+        <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+        <version>2.1.0</version> <!-- Use the latest version -->
+    </dependency>
+
+2. create swaggerConfig class to generate documentation.
+
+3. Run the application and access Swagger in browser.
+
+if you get any error add the below line in application.properties file 
+
+     spring.mvc.pathmatch.matching-strategy = ANT_PATH_MATCHER
+	 
+=> you can access the swagger ui in browser with below url 
+    http://localhost:8080/swagger-ui.html
+	
+	for JSON Doc url : http://localhost:8080/v2/api/docs
+	
+	Note: Using swagger UI we can test the REST API functionality just like postman.
+	
+	
+========================
+REST CLIENT DEVELOPMENT
+========================
+=> The application which is accessing the other application is known as REST Client.
+
+=> In spring boot we can develop the REST Client in 3 ways 
+
+    1. RestTemplate Class (Synchrouns).
+	2. WebClient Interface (Sync and async) (introduced in 5.x version).
+	3. FeignClient Interface(spring cloud).
+	
+	
+Note: From Spring 5.x version onwards we have to use webClient instead of RestTemplate. 
+
+ => We have example using RestTemplate.
+ 
+===========================application.properties=================================
+spring.mvc.view.prefix=/views/
+spring.mvc.view.suffix=.jsp
+
+irctc.endpoint.book_ticket=http://65.1.106.215:8081/ticket
+irctc.endpoint.get_ticket=http://65.1.106.215:8081/ticket/{ticketId}
+
+===================================================================================
+controller layer 
+================
+package com.naresh.makemytrip.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.naresh.makemytrip.request.Passenger;
+import com.naresh.makemytrip.response.Ticket;
+import com.naresh.makemytrip.service.MakeMyTripService;
+
+@Controller
+public class MakeMyTripController {
+	
+	@Autowired
+	public MakeMyTripService makeMyTripService;
+	
+	@GetMapping("/")
+	public String welcome() {
+		return "welcome";
+	}
+	
+	@PostMapping("/bookTicket")
+	public String bookTicket(Passenger passenger,Model model) {
+	Ticket ticketInfo =	makeMyTripService.processBookTicket(passenger);
+	 model.addAttribute("ticket", ticketInfo);
+		return "success";
+	}
+	
+	@GetMapping("/trainBooking")
+	public String bookTrain() {
+		return "trainbooking";
+	}
+	
+	@GetMapping("/search")
+	public String searchPage() {
+	    return "search"; // The JSP page name (e.g., searchTicket.jsp)
+	}
+	@GetMapping("/searchTicket")
+	public String searchTicket(@RequestParam("ticketId") String ticketId, Model model) {
+		Ticket ticketDetails = makeMyTripService.getTicketInfo(ticketId);
+		model.addAttribute("ticket", ticketDetails);
+		return "search";
+	}
+}
+
+======================================service layer=========================
+
+package com.naresh.makemytrip.service;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.client.RestTemplate;
+
+import com.naresh.makemytrip.request.Passenger;
+import com.naresh.makemytrip.response.Ticket;
+
+@Service
+public class MakeMyTripService {
+    @Value("${irctc.endpoint.book_ticket}")
+	private String IRCTC_BOOK_TICKET_URL;
+    @Value("${irctc.endpoint.get_ticket}")
+	private String IRCTC_GET_TICKET_URL;
+
+	public Ticket processBookTicket(Passenger passenger) {
+
+		RestTemplate restTemplate = new RestTemplate();
+		ResponseEntity<Ticket> responseEntity = restTemplate.postForEntity(IRCTC_BOOK_TICKET_URL, passenger, Ticket.class);
+
+		HttpStatusCode statusCode = responseEntity.getStatusCode();
+
+		if (statusCode.is2xxSuccessful() == true) {
+			Ticket ticket = responseEntity.getBody();
+			return ticket;
+		}
+		return null;
+
+	}
+	
+	public Ticket getTicketInfo(String ticketId) {
+		RestTemplate restTemplate = new RestTemplate();
+	     ResponseEntity<Ticket>  responseEntity =  restTemplate.getForEntity(IRCTC_GET_TICKET_URL,Ticket.class,ticketId);
+	     HttpStatusCode statusCode = responseEntity.getStatusCode();
+			if (statusCode.is2xxSuccessful() == true) {
+				Ticket ticket = responseEntity.getBody();
+				return ticket;
+			}
+			return null;
+	}
+}
+===============================Request=====================================================
+
+package com.naresh.makemytrip.request;
+
+
+public class Passenger {
+	
+	private String fname;
+	private String lname;
+	private String from;
+	private String to;
+	private String doj;
+	private String trainNum;
+	private String seatNumber;
+	
+	public String getFname() {
+		return fname;
+	}
+	public void setFname(String fname) {
+		this.fname = fname;
+	}
+	public String getLname() {
+		return lname;
+	}
+	public void setLname(String lname) {
+		this.lname = lname;
+	}
+	public String getFrom() {
+		return from;
+	}
+	public void setFrom(String from) {
+		this.from = from;
+	}
+	public String getTo() {
+		return to;
+	}
+	public void setTo(String to) {
+		this.to = to;
+	}
+	public String getDoj() {
+		return doj;
+	}
+	public void setDoj(String doj) {
+		this.doj = doj;
+	}
+	public String getTrainNum() {
+		return trainNum;
+	}
+	public void setTrainNum(String trainNum) {
+		this.trainNum = trainNum;
+	}
+	public String getSeatNumber() {
+		return seatNumber;
+	}
+	public void setSeatNumber(String seatNumber) {
+		this.seatNumber = seatNumber;
+	}
+	@Override
+	public String toString() {
+		return "Passenger [fname=" + fname + ", lname=" + lname + ", from=" + from + ", to=" + to + ", doj=" + doj
+				+ ", trainNum=" + trainNum + ", seatNumber=" + seatNumber + "]";
+	}
+	
+	
+	
+
+}
+=============================Response=================================
+
+package com.naresh.makemytrip.response;
+
+public class Ticket {
+	
+	private String fname;
+	private String lname;
+	private String from;
+	private String to;
+	private String trainNum;
+	private String tktCost;
+	private String ticketStatus;
+	private String seatNumber;
+	private int ticketId;
+	private String doj;
+	
+	public String getDoj() {
+		return doj;
+	}
+	public void setDoj(String doj) {
+		this.doj = doj;
+	}
+	public String getFname() {
+		return fname;
+	}
+	public void setFname(String fname) {
+		this.fname = fname;
+	}
+	public String getLname() {
+		return lname;
+	}
+	public void setLname(String lname) {
+		this.lname = lname;
+	}
+	public String getFrom() {
+		return from;
+	}
+	public void setFrom(String from) {
+		this.from = from;
+	}
+	public String getTo() {
+		return to;
+	}
+	public void setTo(String to) {
+		this.to = to;
+	}
+	public String getTrainNum() {
+		return trainNum;
+	}
+	public void setTrainNum(String trainNum) {
+		this.trainNum = trainNum;
+	}
+	public String getTktCost() {
+		return tktCost;
+	}
+	public void setTktCost(String tktCost) {
+		this.tktCost = tktCost;
+	}
+	public String getTicketStatus() {
+		return ticketStatus;
+	}
+	public void setTicketStatus(String ticketStatus) {
+		this.ticketStatus = ticketStatus;
+	}
+	public String getSeatNumber() {
+		return seatNumber;
+	}
+	public void setSeatNumber(String seatNumber) {
+		this.seatNumber = seatNumber;
+	}
+	public int getTicketId() {
+		return ticketId;
+	}
+	public void setTicketId(int ticketId) {
+		this.ticketId = ticketId;
+	}
+	@Override
+	public String toString() {
+		return "Ticket [fname=" + fname + ", lname=" + lname + ", from=" + from + ", to=" + to + ", trainNum="
+				+ trainNum + ", tktCost=" + tktCost + ", ticketStatus=" + ticketStatus + ", seatNumber=" + seatNumber
+				+ ", ticketId=" + ticketId + "]";
+	}
+	
+	
+	
+	
+
+}
+==============
+WebClient
+==============
+-> Web client is a predefined interface introduced in Spring 5.x version.
+-> Using web client interface we can develop REST Client logics 
+-> WebClient supports both sync and async communication.
+
+sync -> Blocking thread (After sending request we have to wait for response)
+
+async -> Non-Blocking thread ( After sending request we no need to wait for response)
+
+=> For RestTemplate class we need to add spring-boot-starter-web dependency in pom.xml file
+
+=> For WebClient interface we need to add spring-boot-starter-webflux dependency in pom.xml file
+
+
+
+
+===================
+Spring Data Rest
+===================
+=> It is used to simplify the REST Api development 
+
+=> we no need to create REST Controllers to perform to perform CRUD Operations with DB table when we use
+     Spring Data REST Concept.
+	 
+	 Example:
+	 
+	 package com.naresh.entity;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name="book_tbl")
+public class Book {
+	@Id
+	private Integer bookId;
+	private String bookName;
+	private Double bookPrice;
+	public Book() {
+		
+	}
+	public Book(Integer bookId, String bookName, Double bookPrice) {
+		this.bookId = bookId;
+		this.bookName = bookName;
+		this.bookPrice = bookPrice;
+	}
+	public Integer getBookId() {
+		return bookId;
+	}
+	public void setBookId(Integer bookId) {
+		this.bookId = bookId;
+	}
+	public String getBookName() {
+		return bookName;
+	}
+	public void setBookName(String bookName) {
+		this.bookName = bookName;
+	}
+	public Double getBookPrice() {
+		return bookPrice;
+	}
+	public void setBookPrice(Double bookPrice) {
+		this.bookPrice = bookPrice;
+	}
+	@Override
+	public String toString() {
+		return "Book [bookId=" + bookId + ", bookName=" + bookName + ", bookPrice=" + bookPrice + "]";
+	}
+	
+	
+
+}
+package com.naresh.repository;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.query.Param;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+
+import com.naresh.entity.Book;
+@RepositoryRestResource(path="books")
+public interface BookRepository extends JpaRepository<Book, Integer> {
+   List<Book> findByBookName(@Param("bookName") String bookName);
+}
+
+package com.naresh;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class Application {
+
+	public static void main(String[] args) {
+		SpringApplication.run(Application.class, args);
+	}
+
+}
+
+==================================================================
+=> if you want restrict HTTP methods, then add following code, For suppose user can access only post and get methods
+    and you want restrict put and delete methods
+===================================================================
+
+package com.naresh.config;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
+import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
+import org.springframework.http.HttpMethod;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+
+import com.naresh.entity.Book;
+
+@Configuration
+public class MyDataRestConfig implements RepositoryRestConfigurer {
+	
+	
+	  @Override
+	public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config, CorsRegistry cors) {
+		
+		  HttpMethod[] unsupportedMethods = {HttpMethod.PUT,HttpMethod.DELETE};
+		  
+		   config.getExposureConfiguration()
+		   .forDomainType(Book.class)
+		   .withItemExposure((metadata,http)-> http.disable(unsupportedMethods))
+		   .withCollectionExposure((metadata,http)-> http.disable(unsupportedMethods));
+	}
+
+}
+
+========================
+applications.yml file 
+========================
+spring:
+  application:
+    name: SB-DATA-REST-API
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    password: root@123
+    url: jdbc:mysql://localhost:3306/sbms
+    username: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+===========================
+pom.xml file 
+==========================
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.4.1</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>com.naresh</groupId>
+	<artifactId>28-SB-DATA-REST-API</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>28-SB-DATA-REST-API</name>
+	<description>Demo project for Spring Boot</description>
+	<url/>
+	<licenses>
+		<license/>
+	</licenses>
+	<developers>
+		<developer/>
+	</developers>
+	<scm>
+		<connection/>
+		<developerConnection/>
+		<tag/>
+		<url/>
+	</scm>
+	<properties>
+		<java.version>17</java.version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-rest</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
+
+
+================================
+REST API Exception Handling
+================================
+-> Exception means un-expected and un-wanted situation.
+-> Exception will cause abnormal termination of program.
+-> To achieve graceful termination, we need to handle exceptions in our application.
+
+
+   -> In Springboot we can handle exceptions in 2 ways 
+   
+       1. Local Exceptions Handling
+	   2. Global Exceptions Handling
+	   
+	   
+=======================================
+Steps to implement Exception Handling
+=======================================
+1. create boot application with web-starter.
+
+2. create RestController with required method.
+
+3. Create user defined Exception class.
+
+4. Create ExceptionInfo Binding class.
+
+5. Create Rest Controller Advice to handle global Exceptions in our application.
+
+package com.naresh;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class Application {
+
+	public static void main(String[] args) {
+		SpringApplication.run(Application.class, args);
+	}
+
+}
+
+
+package com.naresh.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
+
+
+import com.naresh.service.CustomerService;
+
+@RestController
+public class CustomerController {
+	
+	@Autowired
+	private CustomerService customerService;
+	
+	@GetMapping("/customer/{customerId}")
+	public String getCustomerName(@PathVariable Integer customerId) {
+
+		return customerService.getCustomerById(customerId);
+
+	}
+	
+	
+
+}
+
+package com.naresh.exceptions;
+
+import java.time.LocalDateTime;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+@RestControllerAdvice
+public class AppExceptionHandler {
+	@ExceptionHandler(value=CustomerNotFoundException.class)
+	public ResponseEntity<ExceptionInfo> handleCnfe(CustomerNotFoundException customerNotFoundException){
+		ExceptionInfo info = new ExceptionInfo();
+		info.setCode("EX0011");
+		info.setMsg(customerNotFoundException.getMessage());
+		info.setDate(LocalDateTime.now());
+		return new ResponseEntity<>(info,HttpStatus.BAD_REQUEST);
+	}
+
+package com.naresh.exceptions;
+
+public class CustomerNotFoundException extends RuntimeException {
+	
+	public CustomerNotFoundException() {
+		
+	}
+     public CustomerNotFoundException(String message) {
+    	 
+    	 super(message);
+		
+	}
+    
+}
+
+package com.naresh.exceptions;
+
+import java.time.LocalDateTime;
+
+public class ExceptionInfo {
+	
+	private String code;
+	private String msg;
+	private LocalDateTime date;
+	
+	public ExceptionInfo(String code, String msg, LocalDateTime date) {
+		this.code = code;
+		this.msg = msg;
+		this.date = date;
+	}
+	
+	public ExceptionInfo() {
+		
+	}
+	public String getCode() {
+		return code;
+	}
+	public void setCode(String code) {
+		this.code = code;
+	}
+	public String getMsg() {
+		return msg;
+	}
+	public void setMsg(String msg) {
+		this.msg = msg;
+	}
+	public LocalDateTime getDate() {
+		return date;
+	}
+	public void setDate(LocalDateTime date) {
+		this.date = date;
+	}
+	
+	@Override
+	public String toString() {
+		return "ExceptionInfo [code=" + code + ", msg=" + msg + ", date=" + date + "]";
+	}
+
+}
+
+package com.naresh.service;
+
+import org.springframework.stereotype.Service;
+
+import com.naresh.exceptions.CustomerNotFoundException;
+
+@Service
+public class CustomerService {
+	
+	public String getCustomerById(Integer customerId) {
+
+		if (customerId >= 100) {
+			return "Naresh";
+		} else {
+			throw new CustomerNotFoundException("invalid customer id");
+		}
+	}
+
+}
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.4.1</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>com.naresh</groupId>
+	<artifactId>29-REST-API-ExceptionHandling</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>29-REST-API-ExceptionHandling</name>
+	<description>Demo project for Spring Boot</description>
+	<url/>
+	<licenses>
+		<license/>
+	</licenses>
+	<developers>
+		<developer/>
+	</developers>
+	<scm>
+		<connection/>
+		<developerConnection/>
+		<tag/>
+		<url/>
+	</scm>
+	<properties>
+		<java.version>17</java.version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
+
+
+====================================
+REST Architecture Principles
+====================================
+REST: Represenatation State Transfer
+
+1. Client server Architecture (B 2 B)
+
+2. No state / Session Management.
+
+3. Unique Addressability 
+
+4. Map endpoints to HTTP Methods
+
+5. MediaType Respresntation (consumes,produces & Content-Type, Accept)
+
+6. HATEOS (HyperMedia as the engine of application state)
+
+=========
+HATEOS
+=========
+-> it is one of REST Architecture principle
+
+-> It is used to send response along with hyperlinks for related data
+
+Ex:
+URL: http://localhost:8080/customer/101
+
+        {
+          "id": 1001,
+          "name" "John",
+		  "email":"john@gmail.com"
+		  
+		  "links":{
+		     "url": "http://localhost:8080/customers"
+		  }
+		  
+
+        }
+
+=> In springboot we have HATEOS starter to develop REST API with HATEOS concept.
+
+Example:
+
+	 <?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.4.1</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>com.naresh</groupId>
+	<artifactId>30-SB-REST-HATEOS</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>30-SB-REST-HATEOS</name>
+	<description>Demo project for Spring Boot</description>
+	<url/>
+	<licenses>
+		<license/>
+	</licenses>
+	<developers>
+		<developer/>
+	</developers>
+	<scm>
+		<connection/>
+		<developerConnection/>
+		<tag/>
+		<url/>
+	</scm>
+	<properties>
+		<java.version>17</java.version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-hateoas</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
+
+
+package com.naresh;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class Application {
+
+	public static void main(String[] args) {
+		SpringApplication.run(Application.class, args);
+	}
+
+}
+
+package com.naresh.binding;
+
+import org.springframework.hateoas.RepresentationModel;
+
+public class User extends RepresentationModel<User> { // RespresntationModel is base class for generating links.
+	
+	private Integer id;
+	private String name;
+	private String email;
+	public User(Integer id, String name, String email) {
+		this.id = id;
+		this.name = name;
+		this.email = email;
+	}
+	
+	public User() {
+		
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", name=" + name + ", email=" + email + "]";
+	}
+   
+}
+
+package com.naresh.controller;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
+
+import com.naresh.binding.User;
+
+@RestController
+public class UserRestController {
+	@GetMapping("/user")
+	public ResponseEntity<User> getUser(){
+		
+		
+		
+		User user = new User(1001,"John","John@gmail.com");
+		
+		user.add(linkTo(methodOn(UserRestController.class).getUser()).withSelfRel());
+		
+		return new ResponseEntity<>(user,HttpStatus.OK);
+		
+		
+	}
+
+}
+
+Request:
+
+  http://localhost:8080/user
+  
+  Response we are getting:
+  
+  {
+    "id": 1001,
+    "name": "John",
+    "email": "John@gmail.com",
+    "_links": {
+        "self": {
+            "href": "http://localhost:8080/user"
+        }
+    }
+}
+  ======================================================================================================
+  
+  PUT-> To Update complete resource data (user : id,name,email)
+  
+  PATCH -> To Update particular fields in resource (order : id, price , status)
+  
+  =======================================================================================================
+   
+  
+	   
+
+
+
+	
+	
+
+
+
+
+

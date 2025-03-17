@@ -1,0 +1,755 @@
+JDK,JRE & JVM:
+=============
+JDK- Java Development Kit:
+==========================
+-> JDK is software development kit that includes everything needed to develop, compile and run the java application.
+-> Inside the jdk we have 
+        -> JRE(Java Run Time Environment) - needed to run java applications
+        -> Compiler (javac) - converts .java file into .class file (byte code)
+        -> Debugger (jdb) - Helps to debug java programs
+        -> Other Development tools like jar, javadoc
+
+
+===============================
+JRE - Java Runtime Environment
+===============================
+-> JRE provides the necessary environment to run the java application.
+-> Inside the JRE we have 
+      -> JVM - java virtual machine where we can run java bytecode
+      -> it has some libraries like math,IO,etc
+      -> RunTime Components like class loader, garbage collector,security manager,etc
+ -> Use JRE when you only need to run Java applications but don’t need to develop them.
+
+===============================
+JVM - Java Virtual Machine
+===============================
+-> JVM is heart of java where we can run java bytecode and makes java is platform independent.
+
+-> JVM key functions
+   -> loads bytecode(Class Loader)
+   -> verifies bytecode(Bytecode Verifier)
+   -> Executes Code(Interpreter & JIT Compiler)
+   -> Performs Memory Management(Garbage Collection)
+
+📌 How JVM Works?
+1️⃣ Java code (.java) is compiled into bytecode (.class) using javac.
+2️⃣ JVM interprets bytecode and converts it to machine code for execution.
+3️⃣ The Just-In-Time (JIT) Compiler improves performance by caching frequently used code.
+
+Strings:
+========
+=> Generally String is sequence of characters, but in java String is an object that represents sequence of characters.
+
+=> The java.lang.String class is used to create to String objects.
+
+How To Create to String Objects:
+================================
+-> There are two ways to create string objects
+
+1. By String literal
+2. By new Keyword
+
+1) String literal:
+===============
+=> Java String literal is created using double quotes.
+Example:
+
+String s1="welcome";  
+String s2 = "welcome";
+
+String Constant Pool:
+=====================
+In the above example, only one object will be created. Firstly, JVM will not find any string object with the value "Welcome" in string constant pool that is why it will create a new object. After that it will find the string with the value "Welcome" in the pool, it will not create a new object but will return the reference to the same instance.
+
+       Note: String objects are stored in a special memory area known as the "string constant pool".
+
+Why Java uses the concept of String literal?
+ => To make Java more memory efficient (because no new objects are created if it exists already in the string constant pool).
+
+ 2) By new keyword
+ ==================
+String s=new String("Welcome");//creates two objects and one reference variable.
+
+=> In such case, JVM will create a new string object in normal (non-pool) heap memory, and the literal "Welcome" will be placed in the string constant pool. The variable s will refer to the object in a heap (non-pool).
+
+why Strings are immutable in java ?
+
+=> Strings are immutable in java, once String object created,its value cannot modify.
+
+String s1 = "Hello";
+
+s1.concat("World"); // new string created, but assigned to s1
+
+s1 = s1.concat(" World");// here it will create new object reference 
+System.out.println(s1); // Output: Hello World
+
+String:
+===============
+Strings in Java are immutable because:
+  ->String class is final
+  ->Internally uses a final char[] array
+  ->Modification methods return new objects
+  ->String pooling improves memory efficiency
+  ->Ensures security and thread safety.
+
+StringBuffer(Mutable & safe):
+============================
+-> StringBuffer is mutable and threadsafe 
+-> By Using StringBuffer we can modify the object without creating new object
+-> Syncronized methods -> thread safe but slower
+-> uses more memory due to synchronization over head
+
+USE CASE:When multiple threads modifying same object
+
+StringBuilder(Mutable & Fast):
+=============================
+-> It is same like StringBuffer,but not Synchronized
+-> it is faster because it does not use synchronization
+-> Not Thread safe so avoided in multiple thread environments
+
+ Use Case: When working with single-threaded applications needing high performance.
+
+===================
+Stack vs Heap
+===================
+
+Stack (For Execution and local variables):
+==========================================
+-> Stores method-specific data (local variables,method calls,references)
+-> Faster than heap
+-> Follows LIFO principle
+-> Each thread has its stack(thread safe)
+-> Memory automatically deallocats when method exists
+
+Example:
+
+     public class StackExample {
+    public static void main(String[] args) {
+        int a = 10;  // Stored in Stack
+        int b = 20;  // Stored in Stack
+        int result = sum(a, b);
+        System.out.println(result);
+    }
+
+    public static int sum(int x, int y) {
+        int sum = x + y; // Local variables stored in Stack
+        return sum; 
+    }
+}
+
+How Stack Works Here:
+
+a, b, and result are stored in the Stack.
+When sum(x, y) is called, a new stack frame is created for sum().
+After execution, the stack frame is removed, freeing memory.
+
+Heap (For Objects and Global Data):
+==================================
+-> Stores objects,instance varibales,class varibales
+-> slower than stack(because of dynamic allocation)
+-> Shared among all threads (not thread safe unless synchronized)
+-> Objects are garbage collected when no longer referenced.
+
+Example:
+
+        class Student {
+    String name;  // Stored in Heap
+    int age;      // Stored in Heap
+
+    Student(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+}
+
+public class HeapExample {
+    public static void main(String[] args) {
+        Student s1 = new Student("John", 25); // Object stored in Heap
+        Student s2 = new Student("Alice", 22); // Object stored in Heap
+        System.out.println(s1.name + " is " + s1.age);
+    }
+}
+How Heap Works Here:
+
+The Student objects s1 and s2 are created in Heap memory.
+The variables s1 and s2 store references to these objects in Stack memory.
+When objects are no longer referenced, Garbage Collector removes them.
+
+
+==================
+Garbage Collection
+==================
+=> Garbage Collection in java is automatic process to eliminating the unneccassary objects from memory.
+=> In programming language like c/c++ we need to delete unused objects manullay.
+=> But in java, unused objects deleted automatically this called garbage collection in java.
+
+one more Defination for Garbage Collection:
+==========================================
+-> In Java Garbage collection as memory management process that automatically removes unused objects from heap memory.
+-> It prevents memory leaks and improving efficency
+
+why garbage Collectiob needed?
+-> In Java, objects are stored in Heap memory, but when they are no longer needed, they consume memory unnecessarily. Instead of manually freeing memory (like in C/C++ with free() or delete), Java automatically reclaims memory using Garbage Collection.
+=============================
+phases of Garbage Collection:
+============================
+The garbage collector follows three main phases:
+
+🔹 1. Mark Phase:
+    ->Finds all reachable objects (objects still being used).
+    ->Unreachable objects are marked as garbage.
+
+🔹 2. Sweep/Remove Phase:
+   ->Deletes unreachable objects, freeing memory.
+
+🔹 3. Compact Phase:
+   ->Reorganizes remaining objects to avoid memory fragmentation.
+
+================
+Wrapper Classes:
+================
+=> Wrapper Classes is used to convert primitive datatypes into objects and object to primitive.
+=> Since JS2E 5.0 auto boxing and unboxing feature converts primtive data type to object and object to primitive type 
+    automatically
+=> The automatic conversion of primitive into an object is known as autoboxing and vice-versa unboxing.
+
+Example:
+     package com.naresh.oops;
+
+public class WrapperClassExample {
+    public static void main(String[] args) {
+        int a = 20;
+        
+        Integer b = Integer.valueOf(a);// explicitly converts primitive to object
+        
+        Integer c = a;// java compiler automatic conversion using autoboxing
+                          // compiler internally provides Integer.valueOf()
+        
+        Integer d = new Integer(40);
+        int e = d.intValue();
+        
+        int g = d;// java compiler automatic conversion using unboxing
+                  // java compiler internally provides internally intValue()
+    }
+
+}
+
+
+OOP(Object oriented programming):
+=================================
+
+What is class ?
+-> class is template or blue print for creating objects. class encapsulate the data members like attributes and methods (behaviuors);
+
+what is object ?
+-> Object is nothing but a real world entity that can exists physically.
+   Example: table,pen,book,human being
+
+what is inheritance?
+-> one class extends from another class by using extends keyword is known as inheritance.
+-> subclass will acquires all properties and methods from superclass.
+-> By using inheritance we can re-use code.
+Adavntages:
+-> code re-usable
+
+POLYMORPHISAM:
+==============
+-> Polymorphisam is one of the core concepts in OOP.
+-> it performs multiple functionalities with same method name based on the object calling.
+
+Types of Polymorphisam:
+=======================
+1. Compile time polymorphisam (method overloading)
+
+2. Run time polymorphisam (method overriding)
+
+Compile time polymorphisam:
+===========================
+-> Acheived by defining same method names with different type of parameters, order of parameters and number of parameters.
+
+-> The method can be executed at compile time.
+
+    Example:  
+    class Calculator {
+
+    int add(int a, int b) {
+        return a + b;
+    }
+
+    double add(double a, double b) {
+        return a + b;
+    }
+
+    int add(int a, int b, int c) {
+        return a + b + c;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Calculator calc = new Calculator();
+        System.out.println(calc.add(5, 10));         // Calls first method
+        System.out.println(calc.add(5.5, 2.5));     // Calls second method
+        System.out.println(calc.add(1, 2, 3));      // Calls third method
+    }
+}
+🔹 Key Points:
+The methods have the same name but different parameters.
+The method call is resolved at compile time.
+
+Run Time PolyMorphisam:
+========================
+-> Achieved when subclass provides different implementation of a method that is already defined in its parent class.
+
+-> it can executed at run time, based on the object type.
+    
+   Example:
+ class Animal {
+    void makeSound() {
+        System.out.println("Animal makes a sound");
+    }
+}
+
+class Dog extends Animal {
+    @Override
+    void makeSound() {
+        System.out.println("Dog barks");
+    }
+}
+
+class Cat extends Animal {
+    @Override
+    void makeSound() {
+        System.out.println("Cat meows");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Animal myAnimal = new Dog();  // Upcasting
+        myAnimal.makeSound();         // Calls Dog's makeSound()
+
+        myAnimal = new Cat();         // Upcasting to Cat
+        myAnimal.makeSound();         // Calls Cat's makeSound()
+    }
+}
+
+Advantages of PolyMorphisam:
+=============================
+
+-> Improves code reusability
+-> Supports loosly coupling
+-> Helps acheive dynamic method invocation.
+
+
+Abstraction:
+============
+-> Abstraction is one of the core principle in OOP. it is used to hide the implementation details and expose necesssary
+    functinalities to user.
+
+How can we achieve abstraction ?
+-> We can acheive abstraction by using abstract class (partial abstraction) and interfaces(100% abstraction)
+
+-> Abstract classes provide paritial abstraction(it can have both abstract method and concrete methods)
+-> abstract methods means a method that declares with abstract keyword and it doesn't have method body.
+
+     Example:
+
+         abstract class  Vehicle(){
+             abstract void start(); //abstract method
+
+              void stop(){ // concrete method
+                System.out.println("Vehicle stop");
+              }
+         }
+
+Example:
+abstract class Vehicle {
+    abstract void start();  // Abstract method (no implementation)
+    
+    void stop() {           // Concrete method (implementation provided)
+        System.out.println("Vehicle stopped");
+    }
+}
+
+class Car extends Vehicle {
+    @Override
+    void start() {
+        System.out.println("Car starts with a key");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Vehicle myCar = new Car();
+        myCar.start();  // Output: Car starts with a key
+        myCar.stop();   // Output: Vehicle stopped
+    }
+}
+
+
+Interface:
+==========
+=> Interface is blueprint for class and it contains abstract methods (before java 8) ,but after java 8
+    we jave default and static methods.
+=> interface contains only method declartions.
+=> class implements interface by using implements keyword.
+=> interfaces supports multiple inheritance(a class can implement multiple interfaces).
+
+IS-A Relationship:
+==================
+-> The IS-A relationship represents in java inheritance, meaning one class is type of another class .
+
+-> it is acheived using extend keyword for classes and implement keyword for interfaces.
+
+
+Example: IS-A Relationship in Class Inheritance
+
+class Animal {
+    void eat() {
+        System.out.println("This animal eats food.");
+    }
+}
+
+// Child class (Sub class)
+class Dog extends Animal {
+    void bark() {
+        System.out.println("Dog barks.");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Dog dog = new Dog();
+        dog.eat();  // Inherited from Animal
+        dog.bark(); // Defined in Dog
+    }
+}
+
+2. IS-A Relationship Using implements (Interface Inheritance):
+==============================================================
+=> When a class implements an interface, it follows the IS-A relationship because the class must provide an implementation for the interface methods.
+
+// Interface
+interface Vehicle {
+    void drive();
+}
+
+// Class implementing the interface
+class Car implements Vehicle {
+    @Override
+    public void drive() {
+        System.out.println("Car is driving.");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Vehicle myCar = new Car();
+        myCar.drive(); // Output: Car is driving.
+    }
+}
+
+===================
+HAS-A Relationship:
+===================
+
+=> HAS-A Reltionship in java represents the composition or aggregation in java, that means one class contains
+   another class instance as field.
+
+=> It follows the "part-of" relationship.
+
+Example:    
+        class Engine {
+    void start() {
+        System.out.println("Engine starts.");
+    }
+}
+
+class Car {
+    private Engine engine; // HAS-A relationship
+
+    Car() {
+        engine = new Engine(); // Strong dependency
+    }
+
+    void startCar() {
+        engine.start();
+        System.out.println("Car is running.");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Car car = new Car();
+        car.startCar();
+    }
+}
+
+
+HAS-A Relationship (Composition):
+=================================
+=> Composition has strong HAS-A Relationship where one object owns another object, and contained object cannot exists
+    independently.
+
+Example:
+package com.naresh.oops;
+
+class Engine {
+    void start() {
+        System.out.println("Engine started");
+    }
+}
+
+class Car {
+
+    private Engine engine;
+
+    Car() {
+        engine = engine;
+    }
+
+    void startCar() {
+        engine.start();
+        System.out.println("Car is running");
+    }
+
+}
+
+public class HAS_A_RelationShipExample {
+    public static void main(String[] args) {
+        Engine eng = new Engine();
+        Car car = new Car(eng);
+        car.startCar();
+    }
+
+}
+
+=> Here Car class is strongly depending on the engine instance.
+=> if car is destroyed, engine also destroyed.
+
+===================================
+HAS-A Relationship (Aggregation):
+===================================
+
+=> Aggregation is weaker HAS-A relationship where conatined object can exits independently.
+
+Example:
+        package com.naresh.oops;
+
+class Student{
+    
+    String name;
+    
+    Student(String name){
+        this.name = name;
+        
+    }
+    
+    void show() {
+        System.out.println("Student name " + name);
+    }
+}
+class College {
+    private Student student;
+    
+    College(Student student){
+        this.student = student;
+    }
+    
+    void displayStudent() {
+        student.show();
+    }
+    
+}
+public class AggregationExample {
+    public static void main(String[] args) {
+        Student st = new Student("Naresh");
+        College clg = new College(st);
+          clg.displayStudent();
+    }
+
+}
+
+ Can we override static methods ?
+ => No, we can't override the static methods,because overriding based on run time polymorphisam(dynamic dispatch).
+=> static methods belongs to class, not the object, so they don't participate in polymorphisam. 
+
+===================
+Exceptions in java:
+===================
+
+=> Exception is unexpected event that occurs during program execution, disrupting the normal flow of instructions.
+
+=> Java provides the robust mechanisam to handle these exceptions,ensure that program does not crash unexpectedly.
+
+=> To Handle these exceptions we are used try catch blocks.
+
+Types of Exceptions:
+====================
+1. Compile-Time Exceptions
+2. Run-Time Exceptions
+
+Compile-Time Exceptions (OR) Checked Exceptions:
+================================================
+-> Compile time exceptions also known as Checked Exceptions
+-> These Exceptions are checked at compile time.
+-> Compiler enforces programmer to handle these exceptions using try,catch blocks.
+
+Example: IOException,SQLException,FileNotFoundException.
+
+import java.io.*;
+
+public class CheckedExceptionExample {
+    public static void main(String[] args) {
+        try {
+            FileReader file = new FileReader("test.txt"); // File may not exist
+            BufferedReader reader = new BufferedReader(file);
+            System.out.println(reader.readLine());
+            reader.close();
+        } catch (IOException e) {
+            System.out.println("File not found or cannot be read: " + e.getMessage());
+        }
+    }
+}
+
+Run-Time Exceptions (OR) UnChecked Exceptions:
+==============================================
+=> Run-Time Exceptions is also called as UnChecked Exceptions
+
+=> These Exceptions are checked at run time.
+
+Example: ArthimaticException,NullPointerException,IndexOutOfBoundsException.
+
+public class UncheckedExceptionExample {
+    public static void main(String[] args) {
+        int a = 10, b = 0;
+        int result = a / b; // Division by zero
+        System.out.println("Result: " + result);
+    }
+}
+
+Exception Handling In Java:
+===========================
+=> Java provides try,catch,finally,throw.throws keywords to handle Exceptions.
+
+try && catch blocks:
+====================
+-> try block contains risky code that means there is chance to get Exception.
+
+-> catch block, here we handle the exception
+
+Example:  
+public class TryCatchExample {
+    public static void main(String[] args) {
+        try {
+            int num = 5 / 0; // Exception occurs
+        } catch (ArithmeticException e) {
+            System.out.println("Cannot divide by zero!");
+        }
+    }
+}
+
+finally block:
+=============
+
+=>Finally block always executes, regardless of Exception occurance.
+
+public class FinallyExample {
+    public static void main(String[] args) {
+        try {
+            System.out.println("Try block executed.");
+            int num = 5 / 0;
+        } catch (ArithmeticException e) {
+            System.out.println("Exception caught.");
+        } finally {
+            System.out.println("Finally block always executes.");
+        }
+    }
+}
+
+Throw keyword:
+==============
+
+=> throw keyword is used to manullay throw an Exception.
+=> it is used in method body
+
+Example:
+
+public class ThrowExample {
+    public static void checkAge(int age) {
+        if (age < 18) {
+            throw new ArithmeticException("Age must be 18 or above.");
+        } else {
+            System.out.println("Eligible to vote.");
+        }
+    }
+
+    public static void main(String[] args) {
+        checkAge(16);
+    }
+}
+
+Throws Keyword:
+===============
+-> Throws keyword is used to declare exceptions in method signature.
+-> But handling is required in calling method
+
+Example: 
+
+import java.io.*;
+
+public class ThrowsExample {
+    static void readFile() throws IOException {
+        FileReader file = new FileReader("test.txt");
+        file.close();
+    }
+
+    public static void main(String[] args) {
+        try {
+            readFile();
+        } catch (IOException e) {
+            System.out.println("Handled IOException: " + e.getMessage());
+        }
+    }
+}
+
+Custom Exceptions:
+===================
+=> We can create our own exception classes by extending Exception class.
+
+ Example:
+       package com.naresh.oops;
+class InvalidAgeException extends Exception{
+    
+    public InvalidAgeException(String message) {
+        super(message);
+    }
+}
+public class CustomException {
+    
+    static void validateAge(int age) throws InvalidAgeException {
+        if(age < 18) {
+            throw new InvalidAgeException("Age should greater than 18");
+        }
+        else {
+            System.out.println("your age is validated");
+        }
+    }
+    
+    public static void main(String[] args){
+        try {
+            validateAge(19);
+        }
+        catch(InvalidAgeException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+
+
+
+
+
+
+

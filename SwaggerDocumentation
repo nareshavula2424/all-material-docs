@@ -1,0 +1,91 @@
+============
+Swagger
+============
+=> In distributed applications two factors will be available 
+
+       1. Provider
+       2. Consumer
+=> Provider will be developed by one company
+=> Consumer will be developed by another company
+
+=> if consumer wants to access provider, consumer side dev team should now provider information
+
+          1. what provider api url ?
+          2. what operations provider having ?
+          3. Operation is binded to which request type ?
+          4. What input provider expecting from consumer ? 
+          5. what output provider will give to consumer ?
+          6. which data form provider will support for input and output ?
+
+
+    Note : if consumer side dev team having all the above information then only they can start consumer side 
+          development.
+
+    Note : provider side dev team should provide the API Documentation to consumer side dev team.
+
+ => Swagger is used to generate api documentation 
+ => Swagger is third party library which is used to generate the REST API Documentation.
+ 
+Note: Using Swagger Documentation Consumer side dev team will understand Provider API Information.
+
+====================================================
+Steps to add the swagger documentation to REST API
+====================================================
+1. Add swagger and swagger-ui dependencies to pom.xml file.
+
+   <dependency>
+        <groupId>io.springfox</groupId>
+        <artifactId>springfox-swagger2</artifactId>
+        <version>2.6.1</version>
+     </dependency>
+    <dependency>
+    <groupId>org.springdoc</groupId>
+    <artifactId>springdoc-openapi-ui</artifactId>
+    <version>1.6.9</version> <!-- Use the latest version -->
+    </dependency>
+
+2. create swaggerConfig class to generate documentation.
+
+     package com.naresh.config;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
+import springfox.documentation.RequestHandler;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+@Configuration
+@EnableSwagger2
+public class SwaggerConfig {
+
+    public Docket apiDoc() {
+         return new Docket(DocumentationType.SWAGGER_2)
+                    .select()
+                    .apis(RequestHandlerSelectors.any())
+                    .paths(PathSelectors.any())
+                    .build();
+    }
+
+}
+
+3. Run the application and access Swagger in browser.
+
+if you get any error add the below line in application.properties file 
+
+     spring.mvc.pathmatch.matching-strategy = ANT_PATH_MATCHER
+	 
+=> you can access the swagger ui in browser with below url 
+    http://localhost:8080/swagger-ui.html
+	
+	for JSON Doc url : http://localhost:8080/v2/api/docs
+	
+	Note: Using swagger UI we can test the REST API functionality just like postman.
+
+
+
+ 
+

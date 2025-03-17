@@ -1,0 +1,427 @@
+
+
+-----------------
+Spring Security
+------------------
+
+-> If you add spring security dependency to your boot application then spring security will be enabled to application.
+
+      <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-security-starter</artifactId>
+      </dependency
+
+-> Spring security will provide the default user name and password to access boot application.
+      
+        username: user
+        password: spring application will generate the password after launching
+
+-> If you want access app in browser we need to give above username and password.
+-> If yoy want accesss app REST API in postman we need to pass credentials in Authorization
+     
+        Authorization -> Basic Auth -> Username -> user 
+                                    -> password -> generating password
+
+-> If you want override the default username and password, you need to pass the username and password properties in       application.yml file or application.properties file
+                      
+                       spring:
+                          security:
+                             user:
+                               name: naresh
+                               password:naresh
+
+
+-> Suppose in our app we have different apis like,
+                       
+                       - /login -> for login page security is not required
+                       -/register -> for register page also security is not required
+                       -/contact -> for contact page security is not required 
+                       -/dashboard -> security is required
+
+    -> In this scenario we need to write one configuration class 
+package com.naresh.security;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+
+@EnableWebSecurity
+@Configuration
+public class AppSecurityConfigurer {
+	
+	@Bean
+	public SecurityFilterChain security(HttpSecurity http) throws Exception {
+
+		http.authorizeHttpRequests((req) -> {
+			req.requestMatchers("/contact").permitAll().anyRequest().authenticated();
+
+		}).httpBasic(Customizer.withDefaults()).formLogin(Customizer.withDefaults());
+
+		return http.build();
+		
+	}
+
+}
+
+=> If you observe we are passing only one user credentials in properties file , but in real time there
+   is many users for accessing the application.
+
+   -> for that purpose we use In-Memory Authentication
+    -> In memory-authentication means storing user credentails in the program for Authentication purpose.
+
+    -> For that we need to create one bean method in configuration class.
+
+      @Bean
+	public InMemoryUserDetailsManager inMemoryUsers() {
+		
+		UserDetails user1 = User.withDefaultPasswordEncoder()
+				                   .username("naresh")
+				                   .password("naresh@123")
+				                   .build();
+		UserDetails user2 = User.withDefaultPasswordEncoder()
+                .username("john")
+                .password("john@123")
+                .build();
+		return new InMemoryUserDetailsManager(user1,user2);
+		
+	}
+
+	==> Note : InMemory authentication is only for practice purpose, not recommanded for real time.
+
+
+=========================================================
+Login and Registration with Data JPA in Spring security
+=========================================================
+->Create spring boot application with below dependency
+
+        -spring-web
+        ->dev-tools
+        ->mysql-driver
+        ->data-jpa
+        ->spring-security
+
+-> Create one entity class called Customer 
+     @Entity
+public class Customer {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer cid;
+	private String name;
+	private String email;
+	private String password;
+	private Long phno;
+	
+	public Integer getCid() {
+		return cid;
+	}
+	public void setCid(Integer cid) {
+		this.cid = cid;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	public Long getPhno() {
+		return phno;
+	}
+	public void setPhno(Long phno) {
+		this.phno = phno;
+	}
+}
+
+->Create service layer 
+  package com.naresh.service;
+
+import java.util.Collections;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import com.naresh.entity.Customer;
+import com.naresh.repository.CustomerRepo;
+
+@Service
+public class CustomerService {
+	
+	@Autowired
+	private CustomerRepo customerRepo;
+	
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
+	
+	public boolean createCustomer(Customer customer) {
+		
+	    String encodedPwd = bCryptPasswordEncoder.encode(customer.getPassword());
+	    customer.setPassword(encodedPwd);
+	    Customer savedCustomer = customerRepo.save(customer);
+	    
+		return savedCustomer.getCid() != null;
+	}
+
+
+-> Create repository layer
+package com.naresh.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.naresh.entity.Customer;
+@Repository
+public interface CustomerRepo extends JpaRepository<Customer, Integer>{
+
+}
+
+-> create controller layer
+
+    package com.naresh.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.naresh.entity.Customer;
+import com.naresh.service.CustomerService;
+
+@RestController
+public class CustomerController {
+	
+	@Autowired
+	private CustomerService customerService;
+	
+	@PostMapping("/register")
+	public ResponseEntity<String> registerCustomer(@RequestBody Customer customer){
+		
+		boolean status = customerService.createCustomer(customer);
+		if(status) {
+			return new ResponseEntity<>("Registered Successfully !!", HttpStatus.CREATED);
+		}else {
+			return new ResponseEntity<>("Registration Failed", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+	}
+	
+}
+
+
+-> in configuration 
+
+    package com.naresh.config;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+
+import com.naresh.service.CustomerService;
+@EnableWebSecurity
+@Configuration
+public class AppSecurityConfig {
+	
+	@Autowired
+	private CustomerService customerService;
+	
+	@Bean
+	public BCryptPasswordEncoder pwdEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+	
+	@Bean
+	public SecurityFilterChain security(HttpSecurity http) throws Exception {
+		
+		http.authorizeHttpRequests((req)-> { 
+			 req.requestMatchers("/register","/login")
+				.permitAll()
+				.anyRequest()
+				.authenticated();
+		});
+		return http.csrf().disable().build();
+	}
+		
+
+}
+ 
+ from the above code, customer registration is completed
+============================================================
+
+from this below code, we are performing customer login functionality with authentication 
+
+-> In Repository Layer we need to create custom method get the user details by email 
+      
+        public Customer  findByEmail(String email);
+
+-> In Service layer we need to implement UserDetailsService and override the loadUserByUsername method, to get user
+    details from database.
+
+@Service
+public class CustomerService implements UserDetailsService{
+
+    @Override
+	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+		
+		  Customer c = customerRepo.findByEmail(email);
+		
+		
+		return new User(c.getEmail(),c.getPassword(), Collections.EMPTY_LIST);
+	}
+}
+
+========================
+Authentication Provider
+========================
+-> it is responsible for providing authentication details like username,password  to AuthenticationManager.
+
+-> we need to and this bean method in configurtion class
+
+    @Bean
+	public DaoAuthenticationProvider authProvider() {
+		
+		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+		
+		authProvider.setPasswordEncoder(pwdEncoder());
+		authProvider.setUserDetailsService(customerService);
+		return authProvider;
+		
+	}
+ 
+
+========================
+Authentication Manager
+========================
+-> it is responsible for autenticate the user details, which is provided by authentication provider.
+
+-> we need to add this bean method in configuration class.
+
+    @Bean
+	public AuthenticationManager authManager(AuthenticationConfiguration config) throws Exception {
+		return config.getAuthenticationManager();
+	}
+
+
+-> now we need to login method in controller layer, updated code in controller layer
+
+       @PostMapping("/login")
+	public ResponseEntity<String> customerLogin(@RequestBody Customer c) {
+		
+		 UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(c.getEmail(), c.getPassword());
+		 // verifying login credentials valid or not
+		 Authentication authenticate = authManager.authenticate(token);
+		 
+		 boolean authenticated = authenticate.isAuthenticated();
+		 if(authenticated) {
+			return new ResponseEntity<>("Login Success",HttpStatus.OK);
+		 }else {
+			 return new ResponseEntity<>("Login Failed",HttpStatus.BAD_REQUEST);
+		 }
+	}
+
+
+  -> Run the application
+  -> if you get the cycle dependency error, add property in application.yml file.
+  
+     spring:
+       main:
+        allow-circular-references: true
+
+
+===================
+JWT Token 
+===================
+=> Jwt stands for JSON Web token
+=> official website https://jwt.io
+
+=>JSON web tokens consists of three parts seperated by dots(.),
+
+        1.Header
+        2.Payload
+        3.Signature
+
+     ->Therefore, a JWT typically looks like the following.
+             xxxxx.yyyyy.zzzzz
+
+Let's break down the different parts.
+========
+Header:
+========
+    => The header typically two parts, one is type of token which is JWT and signing algoritham being used such as 
+       HMAC SHA256 or RSA.
+
+For example:
+
+{
+  "alg": "HS256",
+  "typ": "JWT"
+}
+
+Then, this JSON is Base64Url encoded to form the first part of the JWT.
+==========
+Payload:
+==========
+=> Payload is the second part of JWT token. It has 3 parts one is name,sub, and iat
+   => Payload mainly have user data and token generation timestamp.
+
+=============
+Signature
+=============
+-> Here we perform the encoded of our header and payload with base64UrlEncoded
+
+    HMACSHA256(
+      base64UrlEncoded(header) +"."+
+      base64UrlEncoded(payload),
+      your-256-bit-secret
+    )secret base64 encoded
+
+Sample JWT Token:
+     eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+
+==> First we need to create JWTService.java (for generate token and validate token)
+
+              -> generateToken();
+              -> validateToken();
+
+==> AppFilter.java 
+        
+         -> This filter class will execute when request comes to secured url patterns.
+         -> Check for token presence in the request.
+         -> if token is not availble, it is invalid request and send error response.
+         -> if token is available then read the token and validate token.
+         -> if token is validate then request will be processed.
+
+Note: Client application will send the JWT token to provider in below format
+
+Autharization = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+
+
+                       
+
+

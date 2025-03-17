@@ -1,0 +1,635 @@
+Microservices:
+--------------
+
+Monolith Architecture vs Microservices Architecture:
+----------------------------------------------------
+
+what is Monolith Architecture ?
+
+-> If we develop all the functionalities in single project then we called it as Monolith Architecture based
+   Application.
+-> We will package our application as a jar/war to deploy into server.
+-> As Monolith application contains all functionalities , it will become fat jar/war.
+
+Advantages:
+-----------
+1. Simple to develop 
+
+2. Everything is avalible at one place.
+
+3. Configuartion required only once.
+
+Dis-Advantages:
+---------------
+
+1. Difficult to maintain.
+
+2. Dependencies among the functionalities.
+
+3. Single point of failure.
+
+4. Entire project Re-Deployment.
+
+
+
+############To overcome the problems of Monolith Architecture, Microservices are coming into the market##########
+
+-> Microservices is not a programming language.
+-> Microservices is not a framework.
+-> Microservices is not an API.
+###### Microservices is Architecturual design pattern #####
+
+-> Microservices suggesting to develop application functionalities with loosly coupling.
+
+-> In Microservices Architecture we don't develop all functionalities in one project. we will divide project functionalities into several REST APIs
+
+*****************  Note: One REST API is called as one Microservice  *********************************
+
+-> Microservices Architecture based project means collection of REST APIs.
+
+Advantages:
+-----------
+
+1. Loosely Coupling
+
+2. Easy to maintain
+
+3. Faster Development.
+
+4. Quick Deployment.
+
+5. Faster releases.
+
+6. Less Downtime.
+
+7. Technology independence.
+
+Disadvantages:
+--------------
+
+1. Bounded context ( Deciding no.of services to be created )
+
+2. Lot of Configurations
+
+3. Visibility
+
+4. Pack of cards
+
+
+===============================
+Microservices Architecture
+===============================
+
+-> we don't have any fixed architecture for Microservices.
+
+-> People are customizing microservices architecture according to thier project requirement.
+
+-> Most of the projects will use below components in Microservices Architecture.
+
+    1. Service Registry (Eureka server)
+    2. Services (REST APIs)
+    3. Interservice communication (FeignClient)
+    4. API Gateway (Zuul Proxy)
+    5. Admin server
+    6. Zipkin server
+
+
+=================
+Service Registry
+=================
+
+-> Service Registry acts as DB of services available in the project.
+-> It provides the details of all services which are registred with Service Registry.
+-> We can Identify how many services are there in the project.
+-> We can indentify how many instances are available for each service.
+-> We can use "Eureka server" as service registry.
+-> Eureka server provided by "Spring Cloud Netflix" library.
+
+-> In our application, how many services are there, what is the url of service, what is the status of services, all 
+   these information will tell the service registry.
+
+===========
+Services
+===========
+-> Services means REST APIs / Microservices.
+-> Services contains backend bussiness logic.
+-> In project , some services interact with DB,some services intercat with third party apis, some services interact
+    with another services (inter-service communication).
+-> For inter-service communication we use feign client.
+-> To distribute the load, we can run one service in multiple instances (Load balancing).
+
+Note: we will registry every service with service registry.
+
+==============
+API GATEWAY
+==============
+-> API Gateway is used to manage our application apis in the project.
+-> API Gateway acts a mediater between end user and backend apis.
+-> API Gateway can contain filter logic to decide request processing (Authentication).
+-> API Gateway will contain Routing logic (which request will go to which api)
+-> API Gateway also will be registered with service registry.
+-> We can use "Spring Cloud Gateway" as API Gateway.
+
+===================
+Admin Server
+==================
+-> Admin server is used to manage all backend acutuator endpoints at one place.
+-> Our backend apis will be registered with admin server
+-> Admin server will provide the user interface to monitor apis actuator endpoints.
+
+
+===============
+Zipkin Server
+===============
+-> Zipkin server is used for Distributed Tracing.
+-> Using Zipkin server, we can monitor which API is taking more time to process our request.
+
+
+
+=============Steps To Develop the Service Registry Application(Eureka server)==============
+
+1. Create Service registry application with below dependency 
+         - EurekaServer(spring-cloud-starter-netflix-eureka-server)
+
+2. Configure @EnableEurekaServer annotation to boot start class
+3. Configure below properties in application.yml file 
+
+server:
+    port:8761
+
+eureka:
+   client:
+     register-with-eureka: false
+
+
+Note: If service registry project port is 8761 then clients can discover service-registry and will automatically 
+       register with service-registry. if service-registry running any other port number then we have to register 
+        clients with service registry manually
+
+4. Once started the application , we can access Eureka Dashboard using below url
+
+  URL-> http://localhost:8761/
+
+  ===================================================
+  Steps to develop Spring boot Admin server project
+  ==================================================
+
+  1. create boot application with below dependencies
+
+     a. web-starter
+     b.devtools
+     c.admin-server(code-centric)
+
+  2. Configure @EnableAdminServer annotation to boot start class
+  3. Configure the port number and run the application(port:1111)
+  4. After application started, access Admin server UI using below url
+    URL: http://localhost:1111/
+
+
+======================================
+Steps to work with zipkin server
+======================================
+1. Download Zipkin server jar from website
+
+  url: https://zipkin.io/pages/quickstart.html
+
+2. Copy and paste jar file in some other folder
+
+3. open command prompt from that folder and run the zipkin server jar 
+
+  Cmd: java -jar <jar-file-name> with .jar extension
+
+  Note: Zipkin server will run on port number 9411
+
+4. Access Zipkin server dashboard in browser
+   URL: http://localhost:9411/
+
+===================================
+Steps to develop GREET-API
+==================================
+1. Create spring boot application with below dependencies 
+
+            - eureka-discovery-client
+            - starter-web
+            - devtools
+            - actuator
+            - sleuth
+            - zipkin
+            - admin-client
+
+2. Configure @EnableDiscoveryClient annotation at boot start class
+3. Create RestController with require method
+4. Configure below properties in application.yaml file
+
+  ---------------------application.yaml file----------------------------
+server:
+   port: 9090
+
+spring:
+   boot:
+     admin:
+       client:
+         url:http://localhost:1111
+
+management:
+   endpoints:
+          web:
+          exposure:
+            include:'*'
+
+--------------------------------------------------------------------------
+
+5. Run the application and check in Eureka Dashboard (it should display in eureka dashboard)
+
+
+===================================
+Steps to develop GREET-API
+==================================
+1. Create spring boot application with below dependencies 
+
+            - eureka-discovery-client
+            - starter-web
+            - feign-client
+            - devtools
+            - actuator
+            - sleuth
+            - zipkin-client
+            - admin-client
+
+2. Configure @EnableDiscoveryClient & @EnableFeignClients annotation at boot start class
+3. Create FeignClient to access GREET-API 
+
+     @FeignClient(name="GREET-API")
+     public interface GreetApiClient{
+
+        @GetMapping("/greet")
+        public string invokeGreetApi();
+
+   }
+4. Create RestController with required method
+
+Note: In Rest Controller we should have logic to access another REST API (GREET-API)
+
+ -> For interservice Communication we will use FeignClient
+
+below if yaml file 
+  spring:
+  application:
+    name: WELCOME-API
+  boot:
+     admin:
+       client:
+         url: http://localhost:1111
+    
+server:
+  port: 9092
+  
+management:
+   endpoints:
+       web:
+         exposure:
+           include: '*'
+  
+
+
+=================
+LOAD BALANCER
+=================
+=> Distribute application load to multiple servers to reduce burden.
+
+Note:  When we run application on single server then it may not handle huge load.
+  => When many requesta are coming then our server might crash and app will go down.
+  => To avoid this problem, we will use load balancer in real time for application execution.
+  => LBR is used to distribute application load to multiple servers to reduce burden.
+
+Note: Instead of running our application in single server, We will run application in multiple servers
+      to reduce burden.
+
+
+================
+API GATEWAY
+================
+-> Api Gateway will acts as mediater b/w client requests and backend apis
+-> Api Gateway will provide single entrypoint to access backend apis
+-> In Api Gateway we will write mainly below 2 types of logics
+     
+      1. Filters
+      2. Routing
+-> Filters are used to execute some logic before request processing and after request processing.
+-> Routing is used to tell which request should go to which REST API.
+-> In Spring Cloud we have 2 options to create API GATEWAY.
+    
+    1. Zuul Proxy (Old Approch)
+    2. Spring Cloud Gateway (latest approch)
+
+Note: Zuul proxy is not supported by latest versions of spring boot.
+=====================================
+Working with Spring Cloud Api Gateway 
+=====================================
+1. Create spring boot application with below dependencies
+         ->web-starter
+         ->eureka-client
+         ->cloud-gateway
+         ->devtools
+
+2. Configure @EnableDiscoveryClient annotation at boot start class
+3. Configure api gateway routings in application.yaml file like below
+
+spring:
+    cloud:
+      gateway:
+         routes:
+          - id: welcome-service
+            uri: lb://WELCOME-API
+            predicates:
+             - Path=/welcome
+             
+          - id: greet-service
+            uri: lb://GREET-API
+            predicates:
+             - Path=/greet
+             
+    application:
+      name: CLOUD-API-GATEWAY
+server:
+   port: 3333
+
+==========================
+-> Api Gateway will have 3 types of logics 
+ 1. Route 
+ 2. Predicate 
+ 3. Filters
+
+ -> Routing: Routing is used to defined which request should processed by the which REST API in backend. Routes will be configured using predicate 
+
+-> Predicate : This is java8 function predicate. The input type is spring framework ServerWebExchange.
+               This lets you match on anything from HTTP Request, such as headers or parameters
+
+-> Filters : Filters are used to manipulate the incoming request and outgoing response of our application.
+
+Note: Using Filters we can implement security also for our application.
+
+=> Create MyFilter class in api gate project for performing the filters
+package com.naresh;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.stereotype.Component;
+import org.springframework.web.server.ServerWebExchange;
+
+import java.util.List;
+import java.util.Set;
+
+import org.springframework.cloud.gateway.filter.GatewayFilterChain;
+import org.springframework.cloud.gateway.filter.GlobalFilter;
+
+import reactor.core.publisher.Mono;
+@Component
+public class MyFilter implements GlobalFilter {
+
+   @Override
+   public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+        ServerHttpRequest request = exchange.getRequest();
+        HttpHeaders headers = request.getHeaders();
+        Set<String> keySet = headers.keySet();
+        for( String key: keySet) {
+         List<String> values = headers.get(key);
+         System.out.println(key+ " "+values);
+        }
+        //check for token in header
+      return chain.filter(exchange);
+   }
+
+   
+
+}
+
+=============================
+Sleuth && Zipkin
+=============================
+
+-> Microservices Application means several REST APIs will be availble.
+
+-> As part of application execution one Rest Api can communicate with another REST API.
+
+-> When we send request from UI, it will process by multiple REST APIs with Interservice Communication
+
+*****How we can understand which rest api is taking more time to process request ? ****
+
+-> If we add Sleuth dependency in REST API then it will add span-id and trace-id for log messages.
+-> For Every Request one span-id will be generated by Sleuth
+-> if one request is processing multiple REST API the Sleuth will use same span-id for REST APIs to
+   generate log message.
+
+
+===========================
+Cloud Config Server 
+===========================
+
+=> As of now we are configuring properties in application.properties or application.yml file.
+=> application.properties or application.yml file will be packaged along with our application.
+=> If we want make any changes to properties then we have to re-package our application.
+
+=> To Externalize properties from the application we can use Cloud Config Server.
+
+-> 1.Create git repository and yml files required for project.
+
+        Note: We should keep yml file name as application name.
+         Example: app name is greet the yml file name should be greet.yml.
+
+   2. Create spring starter application with below dependency.
+  
+      <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-config-server</artifactId>
+      <dependency>
+
+   3. Write @EnableConfigServer annotation at boot start class
+
+   4. Configure below properties in application.properties file
+   5. Run the config server application.
+
+
+====================================
+Config Server Client Development
+====================================
+1. Create spring boot application with below dependencies
+     
+      a.web-starter
+      b.config-client
+      c.dev-tools
+
+      <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-config</artifactId>
+      </dependency>
+
+2. Create REST Controller With Required methods.
+
+@RestController
+@RefreshScope
+public class WelcomeController {
+   @Value("${msg}")
+   private String msg;
+   
+   public String getWelcomeMsg() {
+      return msg;
+   }
+
+}
+
+
+3. Configure application.yml file with below properties 
+
+  spring:
+  application:
+    name: Config-Server-Client-APP
+  config:
+    import: optional:configserver:http://localhost:8080
+    application:
+         name:welcome
+ 
+server:
+  port: 9090
+
+
+
+
+=======================
+Circuit Breaker
+=======================
+-> Circuit Breaker is design pattern in microservices.
+-> Circuit Breaker is used to implement fault-tolerance systems.
+-> fault-tolerance systems is also known as resillence systems.
+-> Fault-tolerance system means when main logic is failed to execute then we should execuate fallback
+    logic to process client request.
+
+=============
+Use Case:
+=============
+-> Get data from redis 
+-> If redis logic is failing then we should get data from database.
+
+Note: If redis logic is failing for 3 requests continously then execute db logic for 30 mins.
+After 30 mins re-try foe redis logic execution if it is working then execute redis logic only.
+ if 3 re-try executions failed with redis then execute db logic for next 3o mins.
+
+
+-> To implement circuit-breaker we should add below dependency in pom.xml file
+
+<dependency>
+    <groupId>io.github.resilience4j</groupId>
+    <artifactId>resilience4j-spring-boot3</artifactId>
+    <version>2.0.2</version> <!-- Check the latest version -->
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-aop</artifactId>
+</dependency>
+
+--------------------------------------------------------------
+
+package com.naresh.controller;
+
+import java.util.Random;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+
+
+@RestController
+public class DataRestController {
+
+   private static final String REDIS_SERVICE = "redisService";
+
+   @GetMapping("/data")
+   @CircuitBreaker(name = REDIS_SERVICE, fallbackMethod = "getDataFromDB")
+   public String getDataFromRedis() {
+      System.out.println("Redis() method executed");
+      if(new Random().nextInt(10) <= 10) {
+         throw new RuntimeException("Redis server is Down");
+         
+      }
+      return "data accessed from redis (main logic executed)";
+   }
+   
+   public String getDataFromDB(Throwable throwable) {
+       System.out.println("Fallback method executed");
+      return " DB logic executed fall back mathod";
+   }
+
+}
+
+
+
+
+application.yml file:
+resilience4j:
+  circuitbreaker:
+    instances:
+      redisService:
+        slidingWindowSize: 2
+        failureRateThreshold: 50       # Circuit breaker opens if failure rate > 50%
+        waitDurationInOpenState: 60s   # Stay in open state for 5 seconds
+        permittedNumberOfCallsInHalfOpenState: 3
+        minimumNumberOfCalls: 2
+        slidingWindowType: COUNT_BASED
+
+How It Works:
+============
+1. Sliding Window (Closed State)
+-> Sliding Window Size: 2
+   => The circuit breaker monitors the last 2 calls (successes and failures).
+
+-> Minimum Calls: 2
+  => The circuit breaker will only evaluate the failure rate after at least 5 calls.
+
+-> Failure Rate Threshold: 50%
+  => If 1 or more of the last 2 calls fail, the circuit breaker transitions to the open state.
+2. Open State
+ => When the circuit breaker is in the open state, all calls are routed directly to the fallback method.
+
+-> Wait Duration in Open State: 5 seconds
+ => The circuit breaker stays open for 5 seconds before transitioning to the half-open state.
+
+3. Half-Open State
+ => After 5 seconds, the circuit breaker transitions to the half-open state.
+
+   -> In this state:
+      Permitted Calls: 3
+       -> The circuit breaker allows 3 calls to pass through to the main method.
+       -> These calls act as a test to check if the system has recovered.
+
+-> If all 3 calls succeed:
+-> The circuit breaker transitions back to the closed state.
+-> If 1 or more calls fail:
+   The circuit breaker transitions back to the open state, and all calls will again route to the fallback method.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

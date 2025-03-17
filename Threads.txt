@@ -1,0 +1,114 @@
+
+Threads
+=========
+
+-> Thread is independent path of execution with in the same program.
+-> Java supports multithreading, which allows multiple tasks to run concurrently within the same program.
+
+-> We can create threads by using thread class i.e, extending your class with Thread class or Your class implements with Runnable interface.
+
+
+Why we use threads?
+
+-> improves performance by utilizing cpu core efficiently
+-> Allows concurrent execution of multiple tasks.
+
+What is Daemon Threads ?
+=> A Daemon thread in java is background thread that provides services to user threads
+=> Daemon threads run in background to assist user threads(the main threads in an application)
+=>They handle non-essential tasks like garbage collection, monitoring, logging, etc.
+Example: The Garbage Collector (GC) is a daemon thread that automatically frees unused memory.
+
+Runs continuously → As long as the JVM is running, the daemon thread keeps executing.
+Does not prevent JVM exit → JVM automatically stops daemon threads when all user threads finish.
+
+Example: Class extends Thread Class.
+
+   public class ThreadDemo {
+	public static void main(String[] args) {
+		System.out.println("Main Thread start " + Thread.currentThread().getName());
+		MyThread t1 = new MyThread();
+		t1.start();	
+		System.out.println("Main Thread end" + Thread.currentThread().getName());
+		
+	}
+
+}
+
+package com.naresh;
+
+public class MyThread extends Thread{
+	
+	@Override
+	public void run() {
+		System.out.println("Hello " + Thread.currentThread().getName());
+	}
+}
+
+Example 2:
+      
+       package com.naresh;
+
+public class MyRunnable implements Runnable {
+
+	@Override
+	public void run() {
+		System.out.println("My Runnable Thread");
+
+	}
+
+}
+
+package com.naresh;
+
+public class ThreadDemo {
+	public static void main(String[] args) {
+		System.out.println("Main Thread start " + Thread.currentThread().getName());
+		MyThread t1 = new MyThread();
+		Thread t2 = new Thread(new MyRunnable());
+		t1.start();	
+		t2.start();
+		System.out.println("Main Thread end" + Thread.currentThread().getName());
+		
+	}
+
+}
+
+Note: Why is Runnable Preferred?
+->Java does not support multiple inheritance, so extending Thread prevents extending another class.
+  Using Runnable makes the code more flexible and modular.
+
+  Note: Threads cannot re-use, to overcome this problem we use threadpool
+
+What is thread pool ?
+-> Threadpool is nothing but we can create collections of threads by using thread pool.
+-> To implement threadpool we use executor framework.
+
+-> There are different types of thread pool
+  -> Single Thread Pool
+  -> Cached Thread Pool
+  -> Scheduled Thread Pool
+  -> Fixed Thread Pool
+
+
+
+Serialization & Deserialization:
+===============================
+=> Serialization is the process of converting objects into byte stream so it can be stored in file or sent over network.
+
+=> Deserialization is reverse process, converts bytestream into java objects.
+
+Where Is It Used in Real-Time Applications?
+============================================
+inter process communication=> sending java objects over network for distributed systems.
+
+Webservices (REST API and SAOP API) : converts objects to JSON/XML to back.
+ 
+
+  
+
+
+
+
+
+

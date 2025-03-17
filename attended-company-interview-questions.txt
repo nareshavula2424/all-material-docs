@@ -1,0 +1,23 @@
+
+what is Exception Handling ?
+
+what is difference b/w ArrayList and LinkedList ?
+
+what is difference b/w POST,PUT,PATCH ?
+
+what is service mesh in microservices ?
+
+what is api gateway in microservices ?
+
+what is TSL ?
+
+what is controller advice ?
+
+find the eldest employee using streams ?
+
+copy one table into another table ?
+
+what is difference b/w spring security and oAuth ?
+
+
+

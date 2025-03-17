@@ -1,0 +1,209 @@
+
+===========
+Hibernate
+===========
+=> Hibernate is a popular ORM(Object Relational Mapping) Framework for java that simplifies database interactions
+  by mapping java objects(entites) to relational database tables.
+
+=> It helps to manage database operations efficiently without writing complex sql quaries.
+
+Key Features of Hibernate:
+===========================
+1.ORM (Object-Relational Mapping):
+
+ ->Maps Java objects to database tables automatically.
+ ->Eliminates the need for manual SQL queries.
+
+2.HQL (Hibernate Query Language)
+
+  ->Provides a database-independent query language.
+  Example: SELECT p FROM Product p WHERE p.price > 1000;
+
+
+3.Automatic Schema Generation
+
+-> Hibernate can create, update, or validate database schemas automatically.
+->Controlled using hibernate.hbm2ddl.auto property.
+->Caching Mechanism
+
+4.Supports first-level cache (default) and second-level cache (optional) for better performance.
+  ->Lazy and Eager Loading
+
+5.Controls how related entities are fetched from the database.
+  ->Transaction Management
+
+6.Supports database transactions (commit, rollback) using Spring or JTA.
+   ->Cross-Database Compatibility
+
+7.Works with multiple databases like PostgreSQL, MySQL, Oracle, SQL Server, etc.
+
+============
+Transaction
+============
+=> Transactions in Hibernate represents a unit of work that includes one or more database operations like 
+    (INSERT,UPDATE,DELETE)  that must be executed as single operation.
+
+=> Transactions ensure data integrity and consistency.
+
+Key Points:
+===========
+1. A transaction begins with beginTransaction().
+2. Operations like save(), update(), or delete() are performed within a transaction.
+3. A transaction must be committed (commit()) to save changes in the database.
+4. If an error occurs, the transaction must be rolled back (rollback()) to undo changes.
+
+
+Transaction Management in Hibernate:
+=====================================
+  -> Hibernate provides two ways to manage transactions:
+
+1.Programmatic Transactions (Manual Control):
+2.Declarative Transactions (Spring Transaction Management):
+
+1. Programmatic Transaction Management (Manual Control)
+In this approach, transactions are handled manually using Hibernate's Transaction API.
+
+Example: Save an Object in Hibernate
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
+
+public class HibernateTransactionExample {
+    public static void main(String[] args) {
+        // Create SessionFactory
+        SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
+        Session session = sessionFactory.openSession(); // Open Hibernate session
+        Transaction transaction = null;
+
+        try {
+            // Start a transaction
+            transaction = session.beginTransaction();
+
+            // Create and save an entity
+            Product product = new Product();
+            product.setName("Laptop");
+            product.setPrice(75000.0);
+            session.save(product); // Save entity
+
+            // Commit the transaction (persist changes)
+            transaction.commit();
+
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback(); // Rollback in case of error
+            }
+            e.printStackTrace();
+        } finally {
+            session.close(); // Close session
+        }
+    }
+}
+
+Explanation:
+session.beginTransaction() → Starts a transaction.
+session.save(product) → Saves the object.
+transaction.commit() → Commits the transaction (permanently saves data).
+If an exception occurs, transaction.rollback() undoes the changes.
+
+
+2. Declarative Transaction Management (Spring & Hibernate):
+============================================================
+Spring provides @Transactional annotation to handle transactions automatically.
+
+Example: Using Spring Boot with Hibernate & JPA
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+public class ProductService {
+    
+    private final ProductRepository productRepository;
+
+    public ProductService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
+
+    @Transactional  // Spring handles transaction management
+    public void saveProduct(Product product) {
+        productRepository.save(product); // Automatically within a transaction
+    }
+}
+
+
+Explanation:
+1.@Transactional ensures that all operations inside the method run within a single transaction.
+2.If an exception occurs, Spring automatically rolls back the transaction.
+3.This is the preferred approach in Spring Boot + Hibernate applications.
+
+Rollback Scenario: Handling Transactions in Hibernate:
+======================================================
+-> If an error occurs during a transaction, we must roll back the changes to maintain data consistency.
+
+Example: Rollback Transaction on Exception
+
+try {
+    transaction = session.beginTransaction();
+    
+    Product product = new Product();
+    product.setName("Phone");
+    product.setPrice(50000.0);
+    
+    session.save(product);
+    
+    // Simulating an error
+    if (true) {
+        throw new RuntimeException("Simulated Exception");
+    }
+
+    transaction.commit(); // Won't execute if exception occurs
+
+} catch (Exception e) {
+    if (transaction != null) {
+        transaction.rollback(); // Undo the changes
+    }
+    e.printStackTrace();
+}
+
+Here, the transaction will be rolled back, and product will NOT be saved.
+
+Types of Transactions in Hibernate:
+===================================
+-> JDBC Transactions → Managed manually using JDBC API.
+-> JTA Transactions (Java Transaction API) → Used in distributed systems.
+-> Spring Declarative Transactions (@Transactional) → Recommended in Spring Boot projects.
+
+Why we use @Transactional ?
+
+-> Ensures Atomicity - if one operation fails, all the changes in the transaction are rolled back
+-> Manages Sessions and Connections -> Opens and closes database sessions automatically.
+-> Avoids paritial updates - prevents inconsisitent data stats
+
+Example:
+      @Service
+     public class UserService {
+
+         @Autowired
+         private UserController userController;
+           public UserEnity createUser(UserEntity userEntity){
+                UserEntity user = userController.save(userEntity);
+
+                if(user.getName().equals("Naresh")){
+                     throw new RunTimeException("exception occured, rollback transaction")
+                }
+
+                return user;
+
+           }
+
+     }
+
+
+Conclusion:
+
+->A Hibernate transaction ensures data consistency by grouping multiple operations into a single unit.
+->Transactions must be committed (commit()) or rolled back (rollback()) in case of failures.
+->Spring's @Transactional is the best way to handle transactions in modern applications.
+

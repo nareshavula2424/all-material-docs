@@ -1,0 +1,68 @@
+//get occurance of each character in string
+public class Example2 {
+    public static void main(String[] args) {
+        String str = "abqjkbwqwgcfAHJSWGBJavdwygh";
+// get each occurance of character
+   Map<Character,Long> map = str.chars()
+                .mapToObj(s->Character.toLowerCase(Character.valueOf((char) s)))
+                .collect(Collectors.groupingBy(Function.identity(),Collectors.counting()));
+
+        System.out.println(map);
+
+        // get first non repeated character
+    Map.Entry<Character,Long> entry = str.chars()
+                .mapToObj(s-> Character.toLowerCase(Character.valueOf((char) s)))
+                .collect(Collectors.groupingBy(Function.identity(),Collectors.counting()))
+                .entrySet()
+                .stream()
+                .filter(e-> e.getValue() == 1)
+                .findFirst()
+                .get();
+        System.out.println(entry);
+
+    }
+}
+
+// remove non-repeated character from string
+
+     String name = "welcome"
+
+ String non_RepeatedName =  name.chars().mapToObj(c->(char) c )
+                .collect(Collectors.groupingBy(Function.identity(),LinkedHashMap::new,Collectors.counting()))
+                .entrySet().stream()
+                .filter(e->e.getValue() ==1)
+                .map(e->e.getKey())
+                .map(String::valueOf)
+                .collect(Collectors.joining());
+
+        System.out.println("Non repeated name "+non_RepeatedName);
+
+
+// Second Highest employee from employee List
+
+        Employee employee = employeeList.stream().sorted(Comparator.comparingDouble(Employee::getSalary).reversed())
+                .skip(1)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Second Highest Salary employee is not found"));
+
+        System.out.println(employee);
+
+
+// create 2 predicates one is greater than 30000 and another one less than 50000 and combine 2 predicates and apply on list
+
+ Predicate<Employee> predicate1 = emp2-> emp2.getSalary() > 30000;
+        Predicate<Employee> predicate2 = emp3-> emp3.getSalary() < 50000;
+
+        Predicate<Employee> combinePredicate = predicate1.and(predicate2);
+
+      List<Employee>  emp4 = employeeList.stream().filter(combinePredicate).collect(Collectors.toList());
+        System.out.println(emp4);
+
+// i want make List as immutable
+
+   List<Employee> emp5 = Collections.unmodifiableList(employeeList);
+
+      emp5.add(new Employee(1001,"Naresh Avula",40000,"IT"));
+        System.out.println(emp5);// get UnsupportedOperationException
+
+

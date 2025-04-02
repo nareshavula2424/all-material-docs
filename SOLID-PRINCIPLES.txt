@@ -1,0 +1,193 @@
+
+SOLID-PRINCIPLES IN JAVA:
+=========================
+ 1. S - Single Responsibility Principle (SRP):
+==============================================
+-> if a class should having only one responsibility i.e, having only one.
+
+Bad Example (Violating SRP)
+===========================
+class Report {
+    void generateReport() {  // Generates report
+        System.out.println("Generating Report...");
+    }
+    
+    void printReport() {  // Prints report
+        System.out.println("Printing Report...");
+    }
+}
+
+🔴 Issue: The class Report has two responsibilities: generating and printing a report. If the print logic changes, we must modify this class, violating SRP.
+
+Good Example (Following SRP):
+=============================
+class ReportGenerator {
+    void generateReport() {
+        System.out.println("Generating Report...");
+    }
+}
+
+class ReportPrinter {
+    void printReport() {
+        System.out.println("Printing Report...");
+    }
+}
+
+✅ Fix: Now, we have separate classes for generating and printing, following SRP.
+
+2. O – Open/Closed Principle (OCP):
+===================================
+-> Software entities (classes, modules, functions) should be open for extension but closed for modification.
+-> This means you should be able to add new functionality without modifying existing code.
+
+Bad Example (Violating OCP):
+
+class PaymentProcessor {
+    public void processPayment(String type) {
+        if (type.equals("CreditCard")) {
+            // Process credit card payment
+        } else if (type.equals("PayPal")) {
+            // Process PayPal payment
+        }
+    }
+}
+
+
+-> If a new payment type is added, this class must be modified, violating OCP.
+
+Good Example (Following OCP):
+=============================
+interface Payment {
+    void pay();
+}
+
+class CreditCardPayment implements Payment {
+    public void pay() { System.out.println("Processing Credit Card payment"); }
+}
+
+class PayPalPayment implements Payment {
+    public void pay() { System.out.println("Processing PayPal payment"); }
+}
+
+class PaymentProcessor {
+    public void processPayment(Payment payment) {
+        payment.pay();
+    }
+}
+
+3. L – Liskov Substitution Principle (LSP):
+===========================================
+
+Subtypes must be substitutable for their base types without breaking the application.
+A subclass should extend its parent without changing behavior.
+
+Bad Example (Violating LSP):
+============================
+
+class Bird {
+    public void fly() { System.out.println("Flying"); }
+}
+
+class Penguin extends Bird {
+    @Override
+    public void fly() { throw new UnsupportedOperationException("Penguins can't fly!"); }
+}
+A Penguin should not extend Bird if it cannot fly, as it violates the expected behavior.
+
+Good Example (Following LSP):
+=============================
+
+interface Bird { void eat(); }
+
+interface FlyingBird extends Bird { void fly(); }
+
+class Sparrow implements FlyingBird {
+    public void eat() { System.out.println("Sparrow is eating"); }
+    public void fly() { System.out.println("Sparrow is flying"); }
+}
+
+class Penguin implements Bird {
+    public void eat() { System.out.println("Penguin is eating"); }
+}
+Now, only birds that can fly implement FlyingBird, avoiding violations.
+
+4. I – Interface Segregation Principle (ISP):
+=============================================
+Clients should not be forced to depend on interface they not use.
+Large interfaces should split into smaller and specific ones.
+
+Bad Example (Violating ISP):
+===========================
+interface Worker {
+    void work();
+    void eat();
+}
+
+class Robot implements Worker {
+    public void work() { System.out.println("Robot is working"); }
+    public void eat() { throw new UnsupportedOperationException("Robots don't eat!"); }
+}
+Robot is forced to implement eat(), even though it does not need it.
+
+Good Example (Following ISP):
+============================
+interface Workable {
+    void work();
+}
+
+interface Eatable {
+    void eat();
+}
+
+class Human implements Workable, Eatable {
+    public void work() { System.out.println("Human is working"); }
+    public void eat() { System.out.println("Human is eating"); }
+}
+
+class Robot implements Workable {
+    public void work() { System.out.println("Robot is working"); }
+}
+
+Now, Robot only implements what it needs.
+
+5. D – Dependency Inversion Principle (DIP)
+===========================================
+
+High-level modules should not depend on low-level modules. Both should depend on abstractions.
+This reduces coupling and improves testability.
+
+Bad Example (Violating DIP):
+============================
+class Keyboard {
+    public void type() { System.out.println("Typing..."); }
+}
+
+class Computer {
+    private final Keyboard keyboard = new Keyboard(); // Tight coupling
+
+    public void use() { keyboard.type(); }
+}
+Computer is tightly coupled to Keyboard, making it hard to replace.
+
+Good Example (Following DIP):
+=============================
+
+interface InputDevice {
+    void type();
+}
+
+class Keyboard implements InputDevice {
+    public void type() { System.out.println("Typing..."); }
+}
+
+class Computer {
+    private final InputDevice inputDevice;
+
+    public Computer(InputDevice inputDevice) { this.inputDevice = inputDevice; }
+
+    public void use() { inputDevice.type(); }
+}
+Now, Computer depends on an abstraction (InputDevice), allowing different input devices.
+
+
+

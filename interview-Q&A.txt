@@ -148,3 +148,62 @@ public class SpringBootPracticeApplication {
 
 }
 
+How do you handle multiple beans in springboot ?
+
+=> We can handle multiple beans in springboot by using @Qualifier and @Primary.
+=> when we have multiple beans with same type, then there is ambiguity problem, to resolve this issue we are using @Qualifer OR @Primary
+
+@Qualifier and @Primary in Spring Boot:
+======================================
+Both @Qualifier and @Primary are used in Spring Dependency Injection to resolve ambiguity when multiple beans of the same type exist.
+
+@Primary: it is used to mark as default bean when we have multiple beans with same type.
+
+@Qualifer: it is used to mark as specific bean when we have multiple bean with same type.
+
+Example:
+public interface PaymentProcess {
+    void doPayment();
+}
+
+@Component
+@Primary
+public class CreditCardPayment  implements PaymentProcess{
+    @Override
+    public void doPayment() {
+        System.out.println("Payment was successful with" + CreditCardPayment.class);
+    }
+}
+
+@Component
+public class PaypalPayment  implements PaymentProcess{
+    @Override
+    public void doPayment() {
+        System.out.println("Payment was successful with " + PaypalPayment.class);
+    }
+}
+
+@Service
+public class OrderService {
+
+    private PaymentProcess paymentProcess;
+    @Autowired
+      public OrderService(PaymentProcess paymentProcess){
+          this.paymentProcess = paymentProcess;
+      }
+
+      public void execute(){
+          paymentProcess.doPayment();
+      }
+}
+
+@SpringBootApplication
+public class SpringBootPracticeApplication {
+
+    public static void main(String[] args) {
+        ApplicationContext context = SpringApplication.run(SpringBootPracticeApplication.class, args);
+        OrderService order = context.getBean(OrderService.class);
+        order.execute();
+    }
+
+

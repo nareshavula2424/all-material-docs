@@ -66,3 +66,131 @@ public class Example2 {
         System.out.println(emp5);// get UnsupportedOperationException
 
 
+
+//get non-repeated charcater from string and get only even indexes.
+String string = "welcome";
+        Map<Character,Integer> map = new LinkedHashMap<>();
+        for(Character ch : string.toCharArray()){
+            map.put(ch,map.getOrDefault(ch,0) + 1);
+        }
+        for(int i = 0; i<map.size();i+=2){
+            char c = string.charAt(i);
+            if(map.get(c) == 1){
+                System.out.println("Character " + c + " Position " + i);
+            }
+
+        }
+
+// Highest length of string from sentence
+public class LongestWordInSentance {
+    public static void main(String[] args) {
+        String str = "Streams provide a functional approach to process data in Java";
+
+      Optional<String> longestWord = Arrays.stream(str.split(" "))
+                .max(Comparator.comparingInt(String::length));
+
+        System.out.println("Longest word " + longestWord.orElse("Not Found"));
+
+    }
+}
+
+// Longest number from string 
+        String str1 = "100 200 300 400";
+        
+      Optional<Integer> longestNumber = Arrays.stream(str1.split(" "))
+                  .map(Integer::parseInt)
+                  .sorted((o1,o2)-> o2.compareTo(o1))
+                  .findFirst();
+        System.out.println("Longest number " + longestNumber.orElse(0));
+
+
+// Kapraykar's constant program 
+
+
+public class KaprekarsConstant {
+    public static void main(String[] args) {
+        int num = 6174;
+        Integer[] digits = Arrays.stream(String.valueOf(num).split(""))
+                .map(Integer::parseInt)
+                .toArray(Integer[]::new);
+
+        int asc = Integer.parseInt(Arrays.stream(digits).sorted()
+                    .map(String::valueOf)
+                    .collect(Collectors.joining()));
+
+        int desc = Integer.parseInt(Arrays.stream(digits).sorted((o1,o2)->o2.compareTo(o1))
+                .map(String::valueOf)
+                .collect(Collectors.joining()));
+        int res = desc - asc;
+        System.out.println(res);
+    }
+
+
+
+}
+// permutations program 
+
+public class PermutationsExample {
+
+    public static void main(String[] args) {
+        getPermutations("ABC","");
+    }
+
+    public static void getPermutations(String str,String ans){
+        if(str.length()  == 0){
+            System.out.println(ans);
+            return;
+        }
+        for(int i = 0;i<str.length();i++){
+            char ch = str.charAt(i);
+            String remaining = str.substring(0,i) + str.substring(i + 1);
+            getPermutations(remaining,ans+ch);
+        }
+    }
+}
+
+//write a program anticlock wise of List of integer
+
+public class AntiClockwiseExample {
+    public static void main(String[] args) {
+        List<Integer> list = new ArrayList<>();
+        list.add(10);
+        list.add(20);
+        list.add(5);
+        list.add(7);
+        list.add(6);
+        int rotate = 2;
+        Collections.rotate(list, -rotate);
+        for(Integer li : list){
+            System.out.print(li);
+        }
+    }
+}
+
+// get all numbers from map values and sum 
+
+public class ExtractingValuesFromString {
+    public static void main(String[] args) {
+        HashMap<String,String> map = new HashMap<>();
+        map.put("a","Reliance");
+        map.put("b","124");
+        map.put("c","Jio");
+        map.put("d","9");
+        map.put("e","Infocom123");
+        map.put("f","Limited");
+        map.put("g","10");
+
+      int sum =  map.values().stream()
+                .mapToInt(val -> extractValues(val))
+                .sum();
+        System.out.println(sum);
+    }
+
+    public static int extractValues(String value){
+        String numbers = value.replaceAll("[^0-9]", ""); // Remove all non-numeric characters
+         return numbers.isEmpty() ? 0 : Integer.parseInt(numbers);
+
+    }
+} 
+
+

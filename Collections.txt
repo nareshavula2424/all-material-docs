@@ -3,15 +3,15 @@ Collections Framework
 =====================
 => Collections is a framework that provides an architecture to store and manipulate the group of objects.
 => The java collection framework is part of java.util package.
-=> And includes various classes,interfaces and methods to perform opertions like seacrhing,sorting,inserting,deleting
+=> And includes various classes,interfaces and methods to perform opertions like searching,sorting,inserting,deleting
     and updating elements.
 
 List:
 =====
 -> List is interface in collections framework
 -> List maintain the insertion order and allow duplicate elements
--> List use when you want access based on the index
-->implementation class Arraylist,LinkedList
+-> List use when you want access values based on the index
+-> implementation class Arraylist,LinkedList
 
 Example:
        
@@ -158,6 +158,15 @@ public class HashMapExample {
         System.out.println(map.get(p1)); // Should print "Doctor" if keys are considered equal
     }
 }
+📌 Contract Between hashCode() and equals() in HashMap
+The contract between hashCode() and equals() in Java ensures that HashMap correctly identifies unique keys and handles collisions efficiently.
+
+✅ The hashCode() and equals() Contract
+🔹 Rules
+If two objects are equal (equals() returns true), they must have the same hashCode().
+If two objects have the same hashCode(), they are not necessarily equal.
+This is because different objects can have the same hash code (hash collision).
+If equals() is overridden, hashCode() must also be overridden to maintain consistency.
 
 Explanation:
 ============
@@ -165,7 +174,7 @@ p1 and p2 are different objects but have the same values.
 If equals() and hashCode() are not overridden, HashMap will treat them as different keys, and the size will be 2.
 If overridden correctly, HashMap will consider them the same, and the size will be 1, with the value "Doctor" replacing "Engineer".
 
-LinkedHashMap
+LinkedHashMap:
 =============
 -> LinkedHashMap belongs to map interface.
 -> LinkedHashMap is combination of LinkedList and HashMap.
@@ -181,7 +190,7 @@ LinkedHashMap Example with Internal Implementation:
 A LinkedHashMap in Java is a subclass of HashMap, which maintains the insertion order of elements. It achieves this by using a doubly linked list running through its entries.
 
 Internal Implementation of LinkedHashMap:
-==========================================
+=========================================
 Extends HashMap<K, V>: It inherits the structure of HashMap but overrides some methods.
 Doubly Linked List: Each entry in LinkedHashMap maintains links to its previous and next entry.
 Access Order: Can maintain insertion order (default) or access order (when accessOrder = true)

@@ -6,8 +6,7 @@ JDK- Java Development Kit:
 -> Inside the jdk we have 
         -> JRE(Java Run Time Environment) - needed to run java applications
         -> Compiler (javac) - converts .java file into .class file (byte code)
-        -> Debugger (jdb) - Helps to debug java programs
-        -> Other Development tools like jar, javadoc
+        -> Debugger (jdb) - Helps to debug java programs        -> Other Development tools like jar, javadoc
 
 
 ===============================

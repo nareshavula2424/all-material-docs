@@ -8,7 +8,7 @@ what is difference b/w POST,PUT,PATCH ?
 what is service mesh in microservices ?
 
 what is api gateway in microservices ?
-
+ 
 what is TSL ?
 
 what is controller advice ?
@@ -17,7 +17,63 @@ find the eldest employee using streams ?
 
 copy one table into another table ?
 
-what is difference b/w spring security and oAuth ?
+what is difference b/w JWT token and oAuth ?
+
+How do you optimize the memory efficincy when you findout memory leaks in your application ?
+
+what is observable and promise ?
+
+what is eagar loading and lazy loading ?
+
+what is future and completabule future ?
+
+what is jit(just in time compiler) and heard memory in angular ?
+
+rotate list of integer anticlock wise program ?
+
+what is cors in spring security ?
+
+what is wrapper classes ?
+
+what are the microservivces components ?
+
+what are the life cycle hooks of angular ?
+
+what is the difference b/w Array and ArrayList ?
+
+what is the difference b/w HashMap and LinkedHashMap ?
+
+what is method overloading and method overriding ?
+
+what are the directives in angular ?
+
+what is the difference b/w template driven forms and Reactive Forms ?
+
+what is difference b/w delete and truncate ?
+
+what is normilization in sql ?
+
+can we override static methods in java ?
+
+what are the oops principles in java ?
+
+what is singleton design pattern and write one example ?
+
+Explain about post mapping ?
+
+what is REST API ?
+
+write a program having one map string,string "a","JIO123" like this having multiple entries remove characters from string and adding all numbers and print sum ?
+
+Get the all numbers which greater than 50 using streams ?
+
+
+
+
+
+
+
+
 
 
 
